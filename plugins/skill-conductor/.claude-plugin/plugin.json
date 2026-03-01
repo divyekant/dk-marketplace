@@ -1,0 +1,10 @@
+{
+  "name": "skill-conductor",
+  "description": "Skill composition framework that classifies tasks, selects pipelines, and sequences skills through phases. Acts as an orchestration layer for Claude Code skills.",
+  "version": "1.0.0",
+  "author": { "name": "Divyekant" },
+  "homepage": "https://github.com/divyekant/skill-conductor",
+  "repository": "https://github.com/divyekant/skill-conductor",
+  "license": "MIT",
+  "keywords": ["orchestration", "pipelines", "skills", "composition"]
+}

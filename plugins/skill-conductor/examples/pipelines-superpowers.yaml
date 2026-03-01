@@ -1,0 +1,184 @@
+# Example: Full Pipeline Configuration with Superpowers + Shaping + Review Loop
+#
+# This example shows how to wire together:
+# - Superpowers plugin (brainstorming, TDD, debugging, code review, etc.)
+# - Shaping skills (Shape Up methodology)
+# - Review loop (automated Codex code review)
+# - UI validation (visual verification of frontend changes)
+#
+# Prerequisites:
+# - Superpowers plugin: claude plugin install superpowers
+# - Shaping skills: vendored in this repo
+# - Review loop: vendored in this repo (requires Codex CLI + jq)
+# - ui-val: https://github.com/AshDevFr/ui-val (install separately)
+#
+# To use: copy this file to pipelines.yaml in the project root.
+
+phases:
+  explore:
+    order: 10
+    description: Understand the problem space
+  shape:
+    order: 20
+    description: Define requirements and solution approaches
+  plan:
+    order: 30
+    description: Create implementation plan
+  build:
+    order: 40
+    description: Implement the solution
+  verify:
+    order: 50
+    description: Verify correctness and quality
+  review:
+    order: 60
+    description: Independent review
+  finish:
+    order: 70
+    description: Integrate and ship
+
+skills:
+  # --- Explore phase ---
+  # Superpowers brainstorming: collaborative design before implementation
+  brainstorming:
+    source: plugin/superpowers
+    phase: explore
+    type: phase
+
+  # --- Shape phase ---
+  # Shape Up methodology: iterate on requirements (R) and solution shapes (S)
+  shaping:
+    source: vendor/shaping-skills
+    phase: shape
+    type: phase
+
+  # Map system into UI/code affordances and wiring
+  breadboarding:
+    source: vendor/shaping-skills
+    phase: shape
+    type: phase
+
+  # --- Plan phase ---
+  # Superpowers writing-plans: bite-sized implementation tasks with TDD
+  writing-plans:
+    source: plugin/superpowers
+    phase: plan
+    type: phase
+
+  # --- Build phase ---
+  # Superpowers TDD: red-green-refactor cycle
+  test-driven-development:
+    source: plugin/superpowers
+    phase: build
+    type: phase
+
+  # Superpowers debugging: systematic root-cause analysis
+  systematic-debugging:
+    source: plugin/superpowers
+    phase: build
+    type: phase
+
+  # --- Verify phase ---
+  # Superpowers verification: run tests and confirm before claiming done
+  verification-before-completion:
+    source: plugin/superpowers
+    phase: verify
+    type: phase
+
+  # UI validation: screenshot-based visual verification (modifier)
+  # Only triggers when frontend files are changed
+  ui-val:
+    source: external
+    phase: verify
+    type: modifier
+    triggers:
+      files-changed:
+        - "*.tsx"
+        - "*.css"
+        - "*.html"
+        - "*.vue"
+        - "*.svelte"
+
+  # --- Review phase ---
+  # Automated Codex review loop (requires Codex CLI + jq)
+  review-loop:
+    source: vendor/review-loop
+    phase: review
+    type: phase
+
+  # Superpowers code review: structured review checklist
+  requesting-code-review:
+    source: plugin/superpowers
+    phase: review
+    type: phase
+
+  # --- Finish phase ---
+  # Superpowers: merge, PR, or cleanup workflow
+  finishing-a-development-branch:
+    source: plugin/superpowers
+    phase: finish
+    type: phase
+
+# Skills available at any point regardless of current phase
+always-available:
+  - think-different
+  - learning
+  - dispatching-parallel-agents
+  - subagent-driven-development
+  - using-git-worktrees
+  - executing-plans
+  - receiving-code-review
+  - writing-skills
+
+pipelines:
+  # Quick bug fix or small tweak — skip exploration and planning
+  small-fix:
+    description: Bug fix or small tweak with clear approach
+    phases: [build, verify, finish]
+    skills:
+      build:
+        - systematic-debugging
+        - test-driven-development
+      verify:
+        - verification-before-completion
+      finish:
+        - finishing-a-development-branch
+
+  # Standard feature — explore the idea, plan, build, review, ship
+  feature:
+    description: New feature with clear requirements
+    phases: [explore, plan, build, verify, review, finish]
+    skills:
+      explore:
+        - brainstorming
+      plan:
+        - writing-plans
+      build:
+        - test-driven-development
+      verify:
+        - verification-before-completion
+      review:
+        - requesting-code-review
+      finish:
+        - finishing-a-development-branch
+
+  # Complex/0-to-1 work — full Shape Up methodology before implementation
+  complex:
+    description: Multi-approach problem, 0-to-1, or significant architectural work
+    phases: [explore, shape, plan, build, verify, review, finish]
+    skills:
+      explore:
+        - brainstorming
+      shape:
+        - shaping
+        - breadboarding
+      plan:
+        - writing-plans
+      build:
+        - test-driven-development
+      verify:
+        - verification-before-completion
+      review:
+        - review-loop
+      finish:
+        - finishing-a-development-branch

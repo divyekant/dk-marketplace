@@ -1,0 +1,6 @@
+[submodule "vendor/shaping-skills"]
+	path = vendor/shaping-skills
+	url = https://github.com/rjs/shaping-skills.git
+[submodule "vendor/review-loop"]
+	path = vendor/review-loop
+	url = https://github.com/hamelsmu/claude-review-loop.git
