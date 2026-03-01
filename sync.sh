@@ -21,6 +21,8 @@ PLUGINS=(
   "carto|https://github.com/divyekant/carto.git|master"
 )
 
+MARKETPLACE_JSON=".claude-plugin/marketplace.json"
+
 sync_plugin() {
   local name="$1" repo="$2" branch="$3"
   echo "Syncing $name from $branch..."
@@ -29,6 +31,20 @@ sync_plugin() {
     echo "  OK: $name synced"
   else
     echo "  SKIP: $name already up to date"
+  fi
+
+  # Update marketplace.json version from the plugin's own plugin.json
+  local plugin_json="plugins/$name/.claude-plugin/plugin.json"
+  if [ -f "$plugin_json" ] && [ -f "$MARKETPLACE_JSON" ]; then
+    local version
+    version=$(jq -r '.version // empty' "$plugin_json" 2>/dev/null)
+    if [ -n "$version" ]; then
+      jq --arg n "$name" --arg v "$version" \
+        '(.plugins[] | select(.name == $n)).version = $v' \
+        "$MARKETPLACE_JSON" > "${MARKETPLACE_JSON}.tmp" \
+        && mv "${MARKETPLACE_JSON}.tmp" "$MARKETPLACE_JSON"
+      echo "  Updated marketplace.json: $name → $version"
+    fi
   fi
   echo ""
 }
