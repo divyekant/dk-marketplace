@@ -28,7 +28,18 @@ Same source. Different lens. Different voice. Different structure.
 
 ## Quick Start
 
-### Install
+### As a Claude Code plugin (recommended)
+
+```bash
+# From the DK marketplace
+claude plugins marketplace add divyekant/dk-marketplace
+claude plugins install hermes
+
+# Or install directly from GitHub
+claude plugins install github:divyekant/hermes
+```
+
+### Manual install
 
 ```bash
 # Clone the repo
