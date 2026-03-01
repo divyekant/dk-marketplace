@@ -1,0 +1,10 @@
+{
+  "name": "claude-code-restart",
+  "description": "Self-restart mechanism for Claude Code. Adds /restart slash command and a shell wrapper that catches SIGHUP and restarts with --continue.",
+  "version": "1.0.0",
+  "author": { "name": "Divyekant" },
+  "homepage": "https://github.com/divyekant/claude-code-restart",
+  "repository": "https://github.com/divyekant/claude-code-restart",
+  "license": "MIT",
+  "keywords": ["restart", "session-management", "wrapper", "sighup"]
+}
