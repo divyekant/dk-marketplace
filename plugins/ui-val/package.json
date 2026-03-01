@@ -1,0 +1,15 @@
+{
+  "name": "ui-val",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Visual UI capture tool for AI agents. Captures screenshots at multiple viewports — the agent evaluates them directly.",
+  "bin": {
+    "ui-val": "./bin/ui-val.js"
+  },
+  "scripts": {
+    "check": "node bin/ui-val.js check"
+  },
+  "dependencies": {
+    "playwright": "^1.58.0"
+  }
+}
