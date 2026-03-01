@@ -33,17 +33,32 @@ sync_plugin() {
     echo "  SKIP: $name already up to date"
   fi
 
-  # Update marketplace.json version from the plugin's own plugin.json
+  # Sync plugin metadata into marketplace.json (update existing or create new entry)
   local plugin_json="plugins/$name/.claude-plugin/plugin.json"
   if [ -f "$plugin_json" ] && [ -f "$MARKETPLACE_JSON" ]; then
-    local version
+    local version description
     version=$(jq -r '.version // empty' "$plugin_json" 2>/dev/null)
+    description=$(jq -r '.description // empty' "$plugin_json" 2>/dev/null)
+
     if [ -n "$version" ]; then
-      jq --arg n "$name" --arg v "$version" \
-        '(.plugins[] | select(.name == $n)).version = $v' \
-        "$MARKETPLACE_JSON" > "${MARKETPLACE_JSON}.tmp" \
-        && mv "${MARKETPLACE_JSON}.tmp" "$MARKETPLACE_JSON"
-      echo "  Updated marketplace.json: $name → $version"
+      local exists
+      exists=$(jq --arg n "$name" '[.plugins[] | select(.name == $n)] | length' "$MARKETPLACE_JSON" 2>/dev/null)
+
+      if [ "$exists" -gt 0 ]; then
+        # Update existing entry
+        jq --arg n "$name" --arg v "$version" \
+          '(.plugins[] | select(.name == $n)).version = $v' \
+          "$MARKETPLACE_JSON" > "${MARKETPLACE_JSON}.tmp" \
+          && mv "${MARKETPLACE_JSON}.tmp" "$MARKETPLACE_JSON"
+        echo "  Updated marketplace.json: $name → $version"
+      else
+        # Add new entry
+        jq --arg n "$name" --arg v "$version" --arg d "${description:-No description}" --arg s "./plugins/$name" \
+          '.plugins += [{"name": $n, "description": $d, "version": $v, "source": $s, "category": "development", "strict": false}]' \
+          "$MARKETPLACE_JSON" > "${MARKETPLACE_JSON}.tmp" \
+          && mv "${MARKETPLACE_JSON}.tmp" "$MARKETPLACE_JSON"
+        echo "  Added to marketplace.json: $name $version"
+      fi
     fi
   fi
   echo ""
