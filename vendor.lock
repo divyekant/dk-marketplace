@@ -1,0 +1,15 @@
+# Vendor Lock
+# Records pinned versions for external skill dependencies.
+# Git submodules do the actual pinning; this file is human-readable context.
+
+## shaping-skills
+- **Repo:** https://github.com/rjs/shaping-skills
+- **Pinned:** 9eeda4e (initial pin, 2026-02-22)
+- **Skills provided:** shaping, breadboarding, breadboard-reflection
+- **Notes:** Also includes a PostToolUse hook (shaping-ripple.sh) — not installed by default
+
+## review-loop
+- **Repo:** https://github.com/hamelsmu/claude-review-loop
+- **Pinned:** ef6b7ee (initial pin, 2026-02-22)
+- **Skills provided:** review-loop
+- **Notes:** Requires Codex CLI (`npm install -g @openai/codex`) and jq. Uses hooks + Codex multi-agent. Used by examples/pipelines-superpowers.yaml; not in default config.
