@@ -1,0 +1,8 @@
+# Apollo Project Config — Hermes
+extends: oss
+version: 1.0.0
+
+# Hermes is a markdown-based Claude skill — no runtime stack
+stack:
+  language: markdown
+  package_manager: none

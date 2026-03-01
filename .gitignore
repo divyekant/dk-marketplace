@@ -1,0 +1,15 @@
+# Secrets & env
+.env*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.idea/
+.vscode/
+*.swp
+
+# Dependencies (will be set based on stack choice)
+node_modules/
+__pycache__/
