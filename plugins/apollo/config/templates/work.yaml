@@ -1,0 +1,33 @@
+# Apollo Template: Work / Corporate Project
+# Stricter discipline, thorough docs, review-gated
+extends: defaults
+
+code:
+  comments: thorough
+  error_handling: defensive
+
+docs:
+  readme: true
+  changelog: true
+  update_trigger: feature
+
+workflow:
+  design_before_code: true
+  tdd: true
+  review_before_merge: true
+
+testing:
+  code:
+    run_before_commit: true
+  product:
+    tool: delphi
+    surfaces: [ui, api, cli, background]
+    trigger: feature
+
+release:
+  versioning: semver
+  changelog: auto
+  tag_on_release: true
+
+dev:
+  runtime: docker-compose

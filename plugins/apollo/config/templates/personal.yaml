@@ -1,0 +1,24 @@
+# Apollo Template: Personal / Side Project
+# Lighter-weight — fewer docs requirements, flexible workflow
+extends: defaults
+
+docs:
+  readme: true
+  changelog: false
+  update_trigger: manual
+
+oss:
+  license: none
+  contributing: false
+  code_of_conduct: false
+  issue_templates: false
+
+workflow:
+  design_before_code: true
+  tdd: true
+  review_before_merge: false
+
+release:
+  versioning: semver
+  changelog: none
+  tag_on_release: false
