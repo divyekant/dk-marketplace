@@ -1,0 +1,10 @@
+{
+  "name": "learning-skill",
+  "description": "Automatically captures learnings from failures and fixes during Claude Code sessions. Includes a stop hook for passive extraction from transcripts.",
+  "version": "1.0.0",
+  "author": { "name": "Divyekant" },
+  "homepage": "https://github.com/divyekant/learning-skill",
+  "repository": "https://github.com/divyekant/learning-skill",
+  "license": "MIT",
+  "keywords": ["learning", "debugging", "failures", "knowledge-capture"]
+}
