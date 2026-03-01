@@ -1,0 +1,19 @@
+# Apollo Template: Open Source Project
+# Extends defaults with OSS-specific settings
+extends: defaults
+
+docs:
+  readme: true
+  changelog: true
+  update_trigger: feature
+
+oss:
+  license: MIT
+  contributing: true
+  code_of_conduct: true
+  issue_templates: true
+
+release:
+  versioning: semver
+  changelog: auto
+  tag_on_release: true

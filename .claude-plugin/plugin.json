@@ -1,0 +1,10 @@
+{
+  "name": "apollo",
+  "description": "Agent-agnostic project lifecycle manager. Encodes dev preferences into YAML config and syncs rules across Claude Code, Cursor, Copilot, Windsurf, Codex, and Aider.",
+  "version": "1.0.0",
+  "author": { "name": "Divyekant" },
+  "homepage": "https://github.com/divyekant/apollo",
+  "repository": "https://github.com/divyekant/apollo",
+  "license": "MIT",
+  "keywords": ["project-management", "lifecycle", "preferences", "multi-agent", "release"]
+}
