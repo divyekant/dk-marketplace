@@ -1,0 +1,90 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "dk-marketplace",
+  "description": "Curated Claude Code plugins for project management, testing, documentation, and developer workflows",
+  "owner": {
+    "name": "Divyekant"
+  },
+  "plugins": [
+    {
+      "name": "apollo",
+      "description": "Agent-agnostic project lifecycle manager. Encodes dev preferences into YAML config and syncs rules across Claude Code, Cursor, Copilot, Windsurf, Codex, and Aider.",
+      "version": "1.0.0",
+      "source": "./plugins/apollo",
+      "category": "development",
+      "strict": false
+    },
+    {
+      "name": "carto",
+      "description": "Intent-aware codebase intelligence. Scans codebases, builds layered semantic index using LLMs, stores in Memories MCP. Produces skill files for instant AI agent context.",
+      "version": "1.0.0",
+      "source": "./plugins/carto",
+      "category": "development",
+      "strict": false
+    },
+    {
+      "name": "claude-code-restart",
+      "description": "Self-restart mechanism for Claude Code. Adds /restart slash command and a shell wrapper that catches SIGHUP and restarts with --continue.",
+      "version": "1.0.0",
+      "source": "./plugins/claude-code-restart",
+      "category": "utilities",
+      "strict": false
+    },
+    {
+      "name": "delphi",
+      "description": "Comprehensive test scenario generator and executor. Produces guided cases covering positive, negative, edge, accessibility, and security paths for any software.",
+      "version": "1.0.0",
+      "source": "./plugins/delphi",
+      "category": "testing",
+      "strict": false
+    },
+    {
+      "name": "hermes",
+      "description": "Audience-specific documentation generator. Reads a codebase and produces internal (CS/Support), external (users/developers), and marketing (sales/PMM) docs from a single source.",
+      "version": "1.0.0",
+      "source": "./plugins/hermes",
+      "category": "documentation",
+      "strict": false
+    },
+    {
+      "name": "learning-skill",
+      "description": "Automatically captures learnings from failures and fixes during Claude Code sessions. Includes a stop hook for passive extraction from transcripts.",
+      "version": "1.0.0",
+      "source": "./plugins/learning-skill",
+      "category": "development",
+      "strict": false
+    },
+    {
+      "name": "skill-conductor",
+      "description": "Skill composition framework that classifies tasks, selects pipelines, and sequences skills through phases. Acts as an orchestration layer for Claude Code skills.",
+      "version": "1.0.0",
+      "source": "./plugins/skill-conductor",
+      "category": "development",
+      "strict": false
+    },
+    {
+      "name": "think-different",
+      "description": "On-demand lateral thinking mode. When straight-line problem-solving fails, applies 15 thinking frameworks (First Principles, Inversion, SCAMPER, 5 Whys, etc.) to reframe the problem.",
+      "version": "1.0.0",
+      "source": "./plugins/think-different",
+      "category": "development",
+      "strict": false
+    },
+    {
+      "name": "ui-val",
+      "description": "Visual UI validation using multimodal vision. Captures screenshots at multiple viewports (desktop, tablet, mobile) and evaluates against a 12-point rubric.",
+      "version": "1.0.0",
+      "source": "./plugins/ui-val",
+      "category": "testing",
+      "strict": false
+    },
+    {
+      "name": "update-checker",
+      "description": "Checks for updates to installed CC plugins, MCP servers, and hooks. Runs automatically on session start (once/day) and via /check-updates command.",
+      "version": "0.1.0",
+      "source": "./plugins/update-checker",
+      "category": "utilities",
+      "strict": false
+    }
+  ]
+}
