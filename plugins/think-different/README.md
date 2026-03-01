@@ -14,6 +14,19 @@ It draws from 15 established thinking frameworks including First Principles, Inv
 
 ## Install
 
+### As a Claude Code plugin (recommended)
+
+```bash
+# From the DK marketplace
+claude plugins marketplace add divyekant/dk-marketplace
+claude plugins install think-different
+
+# Or install directly from GitHub
+claude plugins install github:divyekant/think-different
+```
+
+### Manual install
+
 ```bash
 git clone https://github.com/divyekant/think-different.git
 cd think-different
