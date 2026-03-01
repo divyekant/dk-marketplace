@@ -8,6 +8,19 @@ Claude's context resets every session. When it spends 20 minutes debugging somet
 
 ## Install
 
+### As a Claude Code plugin (recommended)
+
+```bash
+# From the DK marketplace
+claude plugins marketplace add divyekant/dk-marketplace
+claude plugins install learning-skill
+
+# Or install directly from GitHub
+claude plugins install github:divyekant/learning-skill
+```
+
+### Manual install
+
 ```bash
 git clone https://github.com/divyekant/learning-skill.git
 cd learning-skill
@@ -16,7 +29,7 @@ bash install.sh
 
 Then restart Claude Code (new session or `/restart` if you have a restart command set up).
 
-### What install.sh does
+#### What install.sh does
 
 1. Copies the skill to your superpowers plugin directory
 2. Copies the hook to `~/.claude/hooks/memory/` (if you have a memories setup)
@@ -24,7 +37,7 @@ Then restart Claude Code (new session or `/restart` if you have a restart comman
 
 ### Requirements
 
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) with the superpowers plugin
+- [Claude Code](https://docs.anthropic.com/en/docs/claude-code)
 - (Optional) [Memories](https://github.com/divyekant/memories) -- a lightweight semantic memory server for AI agents. Enables semantic search, deduplication, and cross-project retrieval of learnings
 
 ## How It Works
