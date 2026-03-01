@@ -1,0 +1,10 @@
+{
+  "name": "think-different",
+  "description": "On-demand lateral thinking mode. When straight-line problem-solving fails, applies 15 thinking frameworks (First Principles, Inversion, SCAMPER, 5 Whys, etc.) to reframe the problem.",
+  "version": "1.0.0",
+  "author": { "name": "Divyekant" },
+  "homepage": "https://github.com/divyekant/think-different",
+  "repository": "https://github.com/divyekant/think-different",
+  "license": "MIT",
+  "keywords": ["lateral-thinking", "problem-solving", "creativity", "reframing"]
+}
