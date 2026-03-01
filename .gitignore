@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.codex/
+*.tgz
+go/carto
+go/test-data/
+go/.carto/
+.ui-val/
+PLAN.md
+.env
+.apollo.yaml
