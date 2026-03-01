@@ -22,6 +22,19 @@ A **conductor skill** that reads a `pipelines.yaml` config and:
 
 ## Quick Start
 
+### As a Claude Code plugin (recommended)
+
+```bash
+# From the DK marketplace
+claude plugins marketplace add divyekant/dk-marketplace
+claude plugins install skill-conductor
+
+# Or install directly from GitHub
+claude plugins install github:divyekant/skill-conductor
+```
+
+### Manual install
+
 ```bash
 git clone --recursive https://github.com/divyekant/skill-conductor.git ~/.local/share/skill-conductor
 cd ~/.local/share/skill-conductor
