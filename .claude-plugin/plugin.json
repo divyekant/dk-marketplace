@@ -1,0 +1,10 @@
+{
+  "name": "ui-val",
+  "description": "Visual UI validation using multimodal vision. Captures screenshots at multiple viewports (desktop, tablet, mobile) and evaluates against a 12-point rubric.",
+  "version": "1.0.0",
+  "author": { "name": "Divyekant" },
+  "homepage": "https://github.com/divyekant/ui-val",
+  "repository": "https://github.com/divyekant/ui-val",
+  "license": "MIT",
+  "keywords": ["ui-testing", "visual-validation", "screenshots", "responsive", "playwright"]
+}
