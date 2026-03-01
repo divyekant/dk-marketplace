@@ -13,6 +13,19 @@ Coding agents build software, run some tests, and call it done. But the gap betw
 
 ## Install
 
+### As a Claude Code plugin (recommended)
+
+```bash
+# From the DK marketplace
+claude plugins marketplace add divyekant/dk-marketplace
+claude plugins install delphi
+
+# Or install directly from GitHub
+claude plugins install github:divyekant/delphi
+```
+
+### Manual install
+
 Clone the repo and symlink the skill:
 
 ```bash
