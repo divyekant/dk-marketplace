@@ -1,0 +1,16 @@
+# Apollo Project Config — Delphi
+extends: oss
+version: 1.1.0
+
+stack:
+  language: markdown
+  package_manager: null
+  test_framework: null
+
+testing:
+  code:
+    approach: null
+    framework: null
+  product:
+    tool: delphi
+    surfaces: [ui, api, cli]
