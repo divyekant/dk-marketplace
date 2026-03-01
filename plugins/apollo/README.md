@@ -4,6 +4,19 @@ Agent-agnostic project lifecycle manager. Encodes your development preferences i
 
 ## Install
 
+### As a Claude Code plugin (recommended)
+
+```bash
+# From the DK marketplace
+claude plugins marketplace add divyekant/dk-marketplace
+claude plugins install apollo
+
+# Or install directly from GitHub
+claude plugins install github:divyekant/apollo
+```
+
+### Manual install
+
 ```bash
 # 1. Symlink the skill
 ln -s <path-to-apollo>/skills/apollo ~/.claude/skills/apollo
