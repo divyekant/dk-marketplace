@@ -8,7 +8,20 @@ Claude Code can't restart itself. When you change MCP servers, hooks, or setting
 
 ## Quick setup
 
-### Via Claude Code (recommended)
+### As a Claude Code plugin (recommended)
+
+```bash
+# From the DK marketplace
+claude plugins marketplace add divyekant/dk-marketplace
+claude plugins install claude-code-restart
+
+# Or install directly from GitHub
+claude plugins install github:divyekant/claude-code-restart
+```
+
+**Note:** You still need the shell wrapper in your `~/.zshrc` — the plugin provides the `/restart` slash command, but the wrapper catches the exit code and restarts. See the Manual section below for step 2.
+
+### Via Claude Code
 
 ```bash
 git clone https://github.com/divyekant/claude-code-restart.git
