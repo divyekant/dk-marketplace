@@ -20,6 +20,26 @@ No API keys. No external services. The agent uses its own vision capabilities to
 
 ## Install
 
+### As a Claude Code plugin (recommended)
+
+```bash
+# From the DK marketplace
+claude plugins marketplace add divyekant/dk-marketplace
+claude plugins install ui-val
+
+# Or install directly from GitHub
+claude plugins install github:divyekant/ui-val
+```
+
+After installing, run the post-install setup:
+
+```bash
+cd ~/.claude/plugins/cache/*/ui-val/*/
+npm install && npx playwright install chromium
+```
+
+### Manual install
+
 ```bash
 git clone https://github.com/divyekant/ui-val.git ~/.claude/skills/ui-val
 cd ~/.claude/skills/ui-val
