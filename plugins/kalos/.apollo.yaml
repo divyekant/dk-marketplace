@@ -1,0 +1,22 @@
+# Kalos — Design Governance Tool
+extends: oss
+version: 0.1.0
+
+stack:
+  language: yaml
+  package_manager: none
+  test_framework: bats
+
+testing:
+  code:
+    approach: none
+    run_before_commit: false
+  product:
+    tool: manual
+    trigger: release
+
+release:
+  versioning: semver
+  changelog: auto
+  tag_on_release: true
+  publish: false

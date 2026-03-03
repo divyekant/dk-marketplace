@@ -1,0 +1,49 @@
+# Kalos Configuration — Global Defaults
+# Copy to ~/.kalos/defaults.yaml and customize
+# Or run /kalos init for interactive setup
+
+tokens:
+  colors:
+    primary: "#6366F1"        # Main brand color
+    secondary: "#EC4899"      # Accent color
+    neutral: "zinc"           # Neutral scale name
+    semantic:
+      success: "#22C55E"
+      warning: "#F59E0B"
+      error: "#EF4444"
+      info: "#3B82F6"
+  typography:
+    font_family: "Inter, system-ui, sans-serif"
+    scale: "1.25"             # Type scale ratio (1.25 = major third)
+    base_size: 16             # Base font size in px
+  spacing:
+    base: 4                   # Base unit in px
+    scale: [0, 1, 2, 3, 4, 6, 8, 12, 16, 24, 32]
+  radii:
+    none: 0
+    sm: 4
+    md: 8
+    lg: 12
+    xl: 16
+    full: 9999
+
+rules:
+  colors:
+    max_unique: 12
+    require_semantic: true
+  typography:
+    max_font_families: 2
+    require_scale: true
+  spacing:
+    require_base_unit: true
+  components:
+    naming: "PascalCase"
+    require_variants: false
+  accessibility:
+    min_contrast: 4.5
+    require_alt_text: true
+
+adapters:
+  - pencil
+  # - tailwind               # v0.2.0
+  # - figma                  # v0.3.0
