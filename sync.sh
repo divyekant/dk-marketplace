@@ -19,6 +19,7 @@ PLUGINS=(
   "ui-val|https://github.com/divyekant/ui-val.git|main"
   "claude-code-restart|https://github.com/divyekant/claude-code-restart.git|main"
   "carto|https://github.com/divyekant/carto.git|master"
+  "pencil-prototyping|https://github.com/divyekant/pencil-prototyping.git|main"
 )
 
 MARKETPLACE_JSON=".claude-plugin/marketplace.json"
