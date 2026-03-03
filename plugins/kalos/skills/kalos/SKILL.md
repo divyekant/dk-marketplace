@@ -4,7 +4,7 @@ description: >-
   Use when starting a design phase, setting up design tokens, or validating
   design artifacts. Triggers on '/kalos', 'design tokens', 'design standards',
   'design check', or 'design rules'.
-argument_hint: "[init|check|sync]"
+argument_hint: "[init|check|sync|extract]"
 allowed_tools:
   - mcp__pencil__batch_get
   - mcp__pencil__search_all_unique_properties
@@ -36,6 +36,8 @@ Detect the user's intent:
 | `/kalos init` or "set up design tokens" or "design standards" | **Init** section |
 | `/kalos check` or "check design" or "validate design" | **Check** section |
 | `/kalos sync` or "sync tokens" or "push tokens" | **Sync** section |
+| `/kalos extract` or "bootstrap tokens" or "import design" | **Extract** section |
+| "switch to {brand}" or "switch brand" or `/kalos sync --brand {name}` | **Brand Switching** (below) |
 | `/kalos` (bare) or "kalos" | **What Next** section |
 
 ## Config Resolution
@@ -56,6 +58,20 @@ Kalos uses three-tier config resolution. Later tiers override earlier ones.
 
 **Merge strategy:** Deep merge. Nested keys override individually, not entire
 objects. Arrays replace (not concatenate).
+
+### Brand Resolution
+
+When the resolved config contains a `brands:` section with an `active` key:
+
+1. Look up `brands.palettes.<active>` — this is the active palette
+2. Deep merge the active palette's `colors` on top of `tokens.colors`
+3. Deep merge the active palette's `typography` on top of `tokens.typography`
+4. The result is the **effective config** used by check, sync, and injection
+
+Any key not specified in the active palette falls back to the base `tokens.*`.
+Spacing and radii are never overridden by brands — they are structural.
+
+If `brands:` is absent, skip brand resolution entirely (backward compatible).
 
 ## Instruction Injection Procedure
 
@@ -83,6 +99,8 @@ config change.
    | `rules.accessibility.min_contrast` | "Min contrast ratio: {n} (WCAG AA)" |
    | `rules.accessibility.require_alt_text: true` | "Require alt text on all images" |
    | `rules.components.naming` | "Component naming: {convention}" |
+   | `brands.active` | "Active brand: {name}" |
+   | `brands.palettes` (count) | "{n} brand palettes configured" |
 
    Only include instructions for config values that are set and meaningful.
 
@@ -123,6 +141,7 @@ If it does NOT exist:
     templates/
       modern.yaml
       minimal.yaml
+      brand.yaml
   ```
 - Copy template files from this skill's source: `../../config/templates/`
 - Copy defaults from: `../../config/defaults.example.yaml`
@@ -135,7 +154,7 @@ Ask questions ONE AT A TIME using AskUserQuestion.
 1. **Template choice**
    - "Which design template?"
    - Options: list template names from `~/.kalos/templates/`
-     (typically: modern, minimal)
+     (typically: modern, minimal, brand)
    - This sets the `extends` value
 
 2. **Primary color**
@@ -157,8 +176,8 @@ Ask questions ONE AT A TIME using AskUserQuestion.
 
 6. **Adapters**
    - "Which adapters to enable?"
-   - Multi-select: Pencil (recommended for v0.1.0)
-   - Note: Tailwind adapter coming in v0.2.0
+   - Multi-select: Pencil, Tailwind
+   - Both recommended if project uses Tailwind
 
 7. **Strictness**
    - "How strict should design rules be?"
@@ -167,14 +186,34 @@ Ask questions ONE AT A TIME using AskUserQuestion.
      - Standard (max 12 colors, contrast 4.5 WCAG AA) — recommended
      - Strict (max 8 colors, contrast 7.0 WCAG AAA)
 
+8. **Multi-brand?**
+   - "Do you need multiple brand palettes?"
+   - Options: No (single brand) — recommended, Yes
+   - If "No": skip to After Questions
+
+9. **Brand names** (only if multi-brand)
+   - "Name your brands (comma-separated, e.g., acme, partner-co)"
+
+10. **Brand colors** (only if multi-brand)
+    - For each brand, ask:
+      - "Primary color for {brand}? (hex value)"
+      - "Secondary color for {brand}? (hex value)"
+      - "Font family for {brand}? (or 'use default')"
+
+11. **Active brand** (only if multi-brand)
+    - "Which brand should be active by default?"
+    - Options: list the brand names entered in Q9
+
 ### After questions:
 
-1. Write `.kalos.yaml` to project root with `extends`, `version: 0.1.0`,
-   and any overrides from user answers
+1. Write `.kalos.yaml` to project root with `extends`, `version: 0.2.0`,
+   and any overrides from user answers.
+   If multi-brand was selected, also write the `brands:` section with palettes and active brand.
 2. Run the **Instruction Injection Procedure** to write KALOS section
    to CLAUDE.md
-3. Confirm: "Design standards set up. Run `/kalos check` after creating
-   designs to validate them, or `/kalos sync` to push tokens to Pencil."
+3. Confirm: "Design standards set up. Run `/kalos check` to validate designs,
+   `/kalos sync` to push tokens to adapters, or `/kalos extract` to
+   bootstrap from existing artifacts."
 
 ---
 
@@ -188,6 +227,10 @@ Scan design artifacts against declared rules. Returns a violation report.
    If no `.kalos.yaml`: "No Kalos config found. Run `/kalos init` first."
 
 2. **For each enabled adapter**, run validation:
+
+**Brand awareness:** If `brands:` is configured, validate against the
+active brand's resolved tokens (after brand resolution), not the base
+`tokens.*` values.
 
 #### Pencil Adapter Validation
 
@@ -266,6 +309,62 @@ If Pencil MCP tools are not available but `pencil` is in adapters:
 
 ---
 
+#### Tailwind Adapter Validation
+
+Only runs if `tailwind` is in the `adapters` list.
+
+**Steps:**
+
+a. Look for Tailwind config in project root: `tailwind.config.ts`,
+   `tailwind.config.js`, or `tailwind.config.mjs`. If not found, skip
+   with `[SKIP] Tailwind: no config file found`.
+
+b. Read the Tailwind config theme values (colors, spacing, radii, fonts).
+
+c. Compare against resolved Kalos tokens:
+   - **Colors**: Do config color hex values match `tokens.colors.*`?
+     If mismatch: `[WARN] Tailwind color '{name}' is {actual},
+     expected {token}`.
+   - **Spacing**: Do spacing values match `base * multipliers` from
+     the token scale? If extra: `[WARN] Tailwind spacing '{key}'
+     ({value}) not in token scale`.
+   - **Radii**: Do border-radius values match `tokens.radii.*`?
+     If mismatch: `[WARN] Tailwind radius '{name}' is {actual},
+     expected {token}`.
+   - **Fonts**: Does `fontFamily` match `tokens.typography.font_family`?
+     If mismatch: `[WARN] Tailwind font family doesn't match token`.
+
+d. Check for stale generated files:
+   - If `kalos.tailwind.config.ts` exists, compare against what sync
+     would generate. If different: `[WARN] kalos.tailwind.config.ts
+     is stale — run /kalos sync`.
+   - Same for `kalos-tokens.css`.
+
+**Output:**
+```
+Tailwind: tailwind.config.ts
+  [OK] Colors match tokens
+  [WARN] Spacing value 7px not in token scale
+  [WARN] Generated kalos-tokens.css is stale — run /kalos sync
+  [OK] Font family matches
+  [OK] Border radii match tokens
+```
+
+#### Brand Palette Validation
+
+Only runs if `brands:` is configured with multiple palettes.
+
+Check that all palettes define the same set of keys:
+- For each palette, collect all defined keys (e.g., `colors.primary`,
+  `colors.secondary`, `typography.font_family`)
+- Compare key sets across palettes
+- If a palette is missing a key that others have:
+  `[ERROR] Brand '{name}' missing key: {key}`
+- If all palettes are consistent:
+  `[OK] All {n} brand palettes have consistent keys`
+
+---
+
 ## /kalos sync — Push Tokens to Adapters
 
 Push resolved design tokens to adapter targets.
@@ -276,6 +375,11 @@ Push resolved design tokens to adapter targets.
    If no `.kalos.yaml`: "No Kalos config found. Run `/kalos init` first."
 
 2. **For each enabled adapter**, run sync:
+
+**Brand awareness:** If `brands:` is configured, sync uses the active
+brand's resolved tokens. The Pencil adapter pushes active brand colors.
+The Tailwind adapter generates `:root` with active brand defaults plus
+`[data-brand="X"]` blocks for all palettes.
 
 #### Pencil Adapter Sync
 
@@ -351,6 +455,171 @@ e. Confirm:
 
 ---
 
+#### Tailwind Adapter Sync
+
+Only runs if `tailwind` is in the `adapters` list.
+
+**Steps:**
+
+a. Resolve effective config (with brand resolution if applicable).
+
+b. Generate `kalos.tailwind.config.ts` in project root:
+
+   ```ts
+   // Generated by Kalos — do not edit manually
+   // Regenerate with: /kalos sync
+   import type { Config } from "tailwindcss";
+
+   export const kalosTheme: Partial<Config["theme"]> = {
+     extend: {
+       colors: {
+         primary: "var(--kalos-color-primary)",
+         secondary: "var(--kalos-color-secondary)",
+         success: "var(--kalos-color-success)",
+         warning: "var(--kalos-color-warning)",
+         error: "var(--kalos-color-error)",
+         info: "var(--kalos-color-info)",
+       },
+       fontFamily: {
+         sans: [<tokens.typography.font_family parts>],
+       },
+       spacing: {
+         // Generated from tokens.spacing.base * tokens.spacing.scale
+         "<multiplier>": "<base * multiplier>px",
+       },
+       borderRadius: {
+         // Generated from tokens.radii
+         "<name>": "<value>px",
+       },
+     },
+   };
+   ```
+
+c. Generate `kalos-tokens.css` in project root:
+
+   ```css
+   /* Generated by Kalos — do not edit manually */
+   /* Regenerate with: /kalos sync */
+
+   :root {
+     --kalos-color-primary: <tokens.colors.primary>;
+     --kalos-color-secondary: <tokens.colors.secondary>;
+     --kalos-color-success: <tokens.colors.semantic.success>;
+     --kalos-color-warning: <tokens.colors.semantic.warning>;
+     --kalos-color-error: <tokens.colors.semantic.error>;
+     --kalos-color-info: <tokens.colors.semantic.info>;
+     --kalos-font-family: <tokens.typography.font_family>;
+     --kalos-font-base-size: <tokens.typography.base_size>px;
+     --kalos-spacing-base: <tokens.spacing.base>px;
+     --kalos-radius-sm: <tokens.radii.sm>px;
+     --kalos-radius-md: <tokens.radii.md>px;
+     --kalos-radius-lg: <tokens.radii.lg>px;
+   }
+   ```
+
+   If `brands:` is configured, also generate per-brand overrides:
+
+   ```css
+   [data-brand="<brand-name>"] {
+     --kalos-color-primary: <palette.colors.primary>;
+     --kalos-color-secondary: <palette.colors.secondary>;
+     /* Only override keys that differ from :root */
+     --kalos-font-family: <palette.typography.font_family>;
+   }
+   ```
+
+d. Confirm:
+   ```
+   Tailwind: generated 2 files
+     kalos.tailwind.config.ts — theme extension with CSS var references
+     kalos-tokens.css — custom properties (default + {n} brand overrides)
+   ```
+
+---
+
+## /kalos extract — Bootstrap Config from Existing
+
+Read existing design artifacts and generate a `.kalos.yaml` from
+discovered values.
+
+### Flow:
+
+1. **Detect available sources** — check which adapters have artifacts:
+   - Pencil: Glob for `**/*.pen`. If found, use
+     `mcp__pencil__search_all_unique_properties` on root nodes to
+     discover `fillColor`, `textColor`, `fontSize`, `fontFamily`,
+     `gap`, `padding`, `cornerRadius` values.
+   - Tailwind: Look for `tailwind.config.ts` (or `.js`, `.mjs`).
+     If found, read theme extension values for colors, spacing,
+     fonts, radii.
+   - CSS: Glob for `**/globals.css`, `**/global.css`, `**/vars.css`,
+     or files containing `:root {`. Parse CSS custom property
+     definitions for color, font, spacing, radius values.
+
+2. **Merge discovered values:**
+   - Deduplicate colors, sort by usage frequency
+   - Identify most-used font as primary font family
+   - Infer spacing base from GCD of discovered spacing values
+   - Collect unique radii values and map to sm/md/lg/xl
+
+3. **Present findings to user:**
+   ```
+   Kalos Extract — discovered tokens:
+     Sources: <list of sources found>
+     Colors: #6366F1 (12 uses), #EC4899 (8 uses), #22C55E (4 uses)...
+     Font: Inter (primary), system-ui (fallback)
+     Spacing: base appears to be 4px (values: 4, 8, 12, 16, 24, 32)
+     Radii: 0, 4, 8, 12
+
+   Suggested template: modern (closest match)
+   Use these as your Kalos config?
+   ```
+
+4. **If user approves** — write `.kalos.yaml` with discovered values,
+   set `extends` to suggested template, run Instruction Injection.
+
+5. **If user wants changes** — let them adjust values before writing.
+   Re-present updated config for confirmation.
+
+### Constraint:
+
+Extract only reads from adapter sources (Pencil, Tailwind, CSS).
+No code parsing, no screenshot analysis — that belongs to a separate
+code-to-design tool.
+
+---
+
+## Brand Switching
+
+Switch the active brand and re-sync all adapters.
+
+### Flow:
+
+1. **Parse brand name** from user message (e.g., "switch to acme").
+
+2. **Validate** — check that the brand name exists in `brands.palettes`.
+   If not: "Brand '{name}' not found. Available: {list of palette names}."
+
+3. **Update config** — change `brands.active` to the new brand name
+   in `.kalos.yaml`.
+
+4. **Re-inject** — run Instruction Injection with the new active brand's
+   resolved colors and font.
+
+5. **Re-sync** — run `/kalos sync` for all enabled adapters with the
+   new active brand.
+
+6. **Confirm:**
+   ```
+   Switched to brand: {name}
+   - Primary: {color}, Secondary: {color}
+   - Font: {family}
+   - Re-injected CLAUDE.md
+   - Re-synced: {adapter list}
+   ```
+
+---
+
 ## /kalos (bare) — What Next
 
 Context-aware guidance. Detect project state and suggest the most useful
@@ -363,19 +632,28 @@ next action.
 
 2. **In a project but no `.kalos.yaml`**
    → "This project doesn't have Kalos config yet. Run `/kalos init`
-   to set up design tokens and rules."
+   to set up design tokens and rules, or `/kalos extract` to bootstrap
+   from existing artifacts."
 
 3. **KALOS section missing or drifted in CLAUDE.md**
    → Re-inject the managed section automatically using the
    Instruction Injection Procedure, then confirm:
    "Re-synced design standards with Kalos config."
 
-4. **`.pen` files exist but haven't been checked**
+4. **Tailwind adapter enabled but generated files missing**
+   → "Tailwind adapter is enabled but kalos.tailwind.config.ts or
+   kalos-tokens.css not found. Run `/kalos sync` to generate them."
+
+5. **Generated files are stale**
+   → "Generated Tailwind files are out of date. Run `/kalos sync`
+   to regenerate."
+
+6. **`.pen` files exist but haven't been checked**
    → "Found .pen files in this project. Run `/kalos check` to
    validate them against your design rules."
 
-5. **Everything looks good**
+7. **Everything looks good**
    → "Design standards are set. Use `/kalos check` to validate
-   artifacts, `/kalos sync` to push tokens to Pencil."
+   artifacts, `/kalos sync` to push tokens to adapters."
 
 Only show the FIRST applicable suggestion.

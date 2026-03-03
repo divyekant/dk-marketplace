@@ -18,7 +18,7 @@ tokens:
     base_size: 16             # Base font size in px
   spacing:
     base: 4                   # Base unit in px
-    scale: [0, 1, 2, 3, 4, 6, 8, 12, 16, 24, 32]
+    scale: [0, 1, 2, 3, 4, 6, 8, 12, 16, 24, 32]  # Multipliers of base
   radii:
     none: 0
     sm: 4
@@ -43,7 +43,26 @@ rules:
     min_contrast: 4.5
     require_alt_text: true
 
+# Optional — multi-brand palette support
+# Omit this section for single-brand projects
+# brands:
+#   active: "default"
+#   palettes:
+#     default:
+#       colors:
+#         primary: "#6366F1"
+#         secondary: "#EC4899"
+#         neutral: "zinc"
+#       typography:
+#         font_family: "Inter, system-ui, sans-serif"
+#     partner:
+#       colors:
+#         primary: "#DC2626"
+#         secondary: "#F59E0B"
+#         neutral: "gray"
+#       typography:
+#         font_family: "Georgia, serif"
+
 adapters:
   - pencil
-  # - tailwind               # v0.2.0
-  # - figma                  # v0.3.0
+  - tailwind

@@ -19,6 +19,12 @@ PROJECT=$(basename "$CWD")
 # Count adapters
 ADAPTER_COUNT=$(grep -c '^\s*-\s' "$CWD/.kalos.yaml" 2>/dev/null || echo "0")
 
+# Check for active brand
+ACTIVE_BRAND=""
+if grep -q '^\s*active:' "$CWD/.kalos.yaml" 2>/dev/null; then
+  ACTIVE_BRAND=$(grep '^\s*active:' "$CWD/.kalos.yaml" 2>/dev/null | head -1 | awk '{print $2}' | tr -d '"' || echo "")
+fi
+
 # Check for instruction drift
 DRIFT=""
 if [ -f "$CWD/CLAUDE.md" ]; then
@@ -29,7 +35,13 @@ else
   DRIFT=" | [MISSING] No CLAUDE.md found"
 fi
 
-STATUS="Kalos: ${PROJECT} | ${EXTENDS} template | v${VERSION} | ${ADAPTER_COUNT} adapters${DRIFT}"
+# Build status line
+BRAND_PART=""
+if [ -n "$ACTIVE_BRAND" ]; then
+  BRAND_PART=" | brand: ${ACTIVE_BRAND}"
+fi
+
+STATUS="Kalos: ${PROJECT} | ${EXTENDS} template | v${VERSION} | ${ADAPTER_COUNT} adapters${BRAND_PART}${DRIFT}"
 
 # Build context + display instruction
 CONTEXT="DISPLAY THIS STATUS LINE only in your VERY FIRST response of the session (not on subsequent messages), on its own line, as a dim/muted line using this exact format:\n\n\`${STATUS}\`\n\nDo not add commentary about it. Just print it and continue with your response. After the first response, never show it again."
