@@ -85,6 +85,14 @@
       "source": "./plugins/update-checker",
       "category": "utilities",
       "strict": false
+    },
+    {
+      "name": "pencil-prototyping",
+      "description": "Launch Pencil.dev on demand and prototype visuals on a canvas. Handles install, launch, MCP connection, canvas creation, drawing, and screenshot capture.",
+      "version": "0.1.0",
+      "source": "./plugins/pencil-prototyping",
+      "category": "design",
+      "strict": false
     }
   ]
 }
