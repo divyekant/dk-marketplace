@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-03-03
+
+### Added
+- `/kalos import <source>` — staged code-to-design pipeline
+- Code file input — parses .tsx/.vue/.html/.css/.svelte for tokens and components
+- URL input — Chrome MCP primary, headless browser (Puppeteer/Playwright) fallback
+- Discover stage — extracts tokens, layout, components into adapter-agnostic UI Model
+- Audit checkpoint — presents findings, lets user adjust before reconstruction
+- Reconstruct stage — generates components via enabled adapters (Pencil, Tailwind)
+- Integrate checkpoint — create config, add as brand, update existing, or skip
+- `bin/capture.sh` — headless browser capture script with Puppeteer/Playwright support
+- Chrome MCP tools added to skill allowed_tools
+
+### Changed
+- `/kalos extract` constraint updated — points to `/kalos import` for code/URL sources
+- `/kalos` (bare) — suggests import for projects without config
+- Routing table — "import design" routes to import (was extract)
+
 ## [0.2.0] - 2026-03-03
 
 ### Added

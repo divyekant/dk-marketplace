@@ -31,6 +31,7 @@ git clone https://github.com/divyekant/kalos ~/.claude/skills/kalos
 | `/kalos check` | Validate design artifacts against rules |
 | `/kalos sync` | Push tokens to adapters (Pencil, Tailwind) |
 | `/kalos extract` | Bootstrap config from existing design artifacts |
+| `/kalos import` | Reverse-engineer design from source code or live URL |
 | `/kalos` | Context-aware guidance |
 
 ## Config
@@ -85,6 +86,20 @@ brands:
 ```
 
 Switch brands: "switch to partner-co" or `/kalos sync --brand partner-co`.
+
+## Import
+
+Reverse-engineer designs from existing source code or live applications:
+
+```bash
+# From source code
+/kalos import src/components/
+
+# From a live URL
+/kalos import https://myapp.com/dashboard
+```
+
+Staged pipeline: **Discover** tokens and components → **Audit** findings → **Reconstruct** via adapters → **Integrate** into Kalos config. Stop at any stage.
 
 ## Adapters
 
