@@ -93,6 +93,14 @@
       "source": "./plugins/pencil-prototyping",
       "category": "design",
       "strict": false
+    },
+    {
+      "name": "kalos",
+      "description": "Format-agnostic design governance tool — define design tokens and rules, enforce them across Pencil, Tailwind, and more",
+      "version": "0.1.0",
+      "source": "./plugins/kalos",
+      "category": "design",
+      "strict": false
     }
   ]
 }
