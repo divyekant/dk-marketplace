@@ -1,0 +1,43 @@
+# Kalos Template: Minimal
+# Strict constraints — limited palette, tight spacing, no extras
+extends: defaults
+
+tokens:
+  colors:
+    primary: "#18181B"
+    secondary: "#71717A"
+    neutral: "zinc"
+    semantic:
+      success: "#16A34A"
+      warning: "#CA8A04"
+      error: "#DC2626"
+      info: "#2563EB"
+  typography:
+    font_family: "system-ui, sans-serif"
+    scale: "1.2"
+    base_size: 16
+  spacing:
+    base: 4
+    scale: [0, 1, 2, 3, 4, 6, 8, 12, 16]
+  radii:
+    none: 0
+    sm: 2
+    md: 4
+    lg: 8
+    full: 9999
+
+rules:
+  colors:
+    max_unique: 8
+    require_semantic: true
+  typography:
+    max_font_families: 1
+    require_scale: true
+  spacing:
+    require_base_unit: true
+  accessibility:
+    min_contrast: 7.0
+    require_alt_text: true
+
+adapters:
+  - pencil
