@@ -1,0 +1,7 @@
+.env*
+.apollo.yaml
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

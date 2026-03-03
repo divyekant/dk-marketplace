@@ -1,0 +1,10 @@
+{
+  "name": "pencil-prototyping",
+  "description": "Launch Pencil.dev on demand and prototype visuals on a canvas. Handles install, launch, MCP connection, canvas creation, drawing, and screenshot capture.",
+  "version": "0.1.0",
+  "author": { "name": "Divyekant" },
+  "homepage": "https://github.com/divyekant/pencil-prototyping",
+  "repository": "https://github.com/divyekant/pencil-prototyping",
+  "license": "MIT",
+  "keywords": ["design", "prototyping", "pencil", "visual", "canvas"]
+}
