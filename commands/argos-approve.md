@@ -35,13 +35,11 @@ If not found: "No pending approval found for issue #N. Run `/argos-status` to se
 ## If Approving
 
 1. Show the user what will be executed:
-   "Approving: [action] on [repo]#[issue] -- [summary]"
+   "Approving: level [N] action on [repo]#[issue] -- [summary]"
 
-2. Source the relevant lib scripts and execute the action:
-   - For `comment_diagnosis`: Read codebase, post analysis comment
-   - For `create_branch`: Create and push the branch
-   - For `push_commits`: Implement the fix, run tests, push
-   - For `open_pr`: Create PR linking to the issue
+2. The pending approval entry stores a `level_N` action field. Execute based on the level:
+   - For **level 3** (thorough review): The fix is already on a branch. Open the PR linking to the issue.
+   - For **level 4** (needs approval): Proceed with the recommended approach — create branch, implement the fix, run tests, push, and open PR.
 
 3. Remove from pending approvals:
    ```bash
@@ -51,11 +49,17 @@ If not found: "No pending approval found for issue #N. Run `/argos-status` to se
 
 4. Send notification via configured channels
 
-5. Store action in memories
+5. Store calibration memory so Argos learns from human decisions:
+   ```
+   memory_add: "argos/<owner>/<repo>/calibration: level <N> for <issue-type> — human approved. Reason: <if given>"
+   ```
 
 ## If Rejecting
 
-1. Confirm: "Rejecting: [action] on [repo]#[issue]"
+1. Confirm: "Rejecting: level [N] action on [repo]#[issue]"
 2. Remove from pending approvals
 3. Optionally post a GitHub comment noting the action was reviewed and declined
-4. Store rejection in memories (so Argos learns what gets rejected)
+4. Store calibration memory so Argos learns what gets rejected:
+   ```
+   memory_add: "argos/<owner>/<repo>/calibration: level <N> for <issue-type> — human rejected. Reason: <if given>"
+   ```

@@ -22,7 +22,8 @@ Parse the repo from arguments (owner/repo format).
    STATE_FILE="$HOME/.claude/argos/state/${SAFE_NAME}.json"
    ```
 
-2. Note: The `/loop` that was running the Argos skill for this repo will need to be stopped manually by the user (CC doesn't have a /loop stop API yet). Tell the user to stop the loop.
+2. Warn the user clearly:
+   "The polling loop is still running — stop it manually (CC doesn't have a /loop stop API yet). Your policy and state have been cleaned up."
 
 3. Optionally remove the policy file (ask first -- user may want to keep it for later).
 

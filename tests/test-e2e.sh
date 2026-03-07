@@ -40,29 +40,27 @@ if [[ "$COUNT" != "2" ]]; then
 fi
 echo "PASS: Found $COUNT new issues"
 
-# 4. Check action tier for 'label'
-TIER=$(echo "$POLICY" | get_action_tier "label")
-if [[ "$TIER" != "auto" ]]; then
-  echo "FAIL: label should be auto tier"
+# 4. Check minimum floor
+FLOOR=$(echo "$POLICY" | get_minimum_floor)
+if [[ "$FLOOR" != "2" ]]; then
+  echo "FAIL: minimum floor should be 2, got $FLOOR"
   exit 1
 fi
-echo "PASS: label action is auto tier"
+echo "PASS: Minimum floor is 2"
 
-# 5. Check action tier for 'open_pr'
-TIER=$(echo "$POLICY" | get_action_tier "open_pr")
-if [[ "$TIER" != "approve" ]]; then
-  echo "FAIL: open_pr should be approve tier"
+# 5. Check denied action: merge_pr
+if ! echo "$POLICY" | is_action_denied "merge_pr"; then
+  echo "FAIL: merge_pr should be denied"
   exit 1
 fi
-echo "PASS: open_pr action is approve tier"
+echo "PASS: merge_pr is denied"
 
-# 6. Check action tier for 'merge_pr' (denied)
-TIER=$(echo "$POLICY" | get_action_tier "merge_pr")
-if [[ "$TIER" != "deny" ]]; then
-  echo "FAIL: merge_pr should be deny tier"
+# 6. Check allowed action: label
+if echo "$POLICY" | is_action_denied "label"; then
+  echo "FAIL: label should not be denied"
   exit 1
 fi
-echo "PASS: merge_pr action is deny tier"
+echo "PASS: label is not denied"
 
 # 7. Check guardrail - rate limit
 if ! check_rate_limit "$REPO" 10; then
@@ -71,15 +69,38 @@ if ! check_rate_limit "$REPO" 10; then
 fi
 echo "PASS: Rate limit check passes"
 
-# 8. Check approval mode for open_pr
-MODE=$(echo "$POLICY" | get_approval_mode "open_pr")
-if [[ "$MODE" != "wait" ]]; then
-  echo "FAIL: open_pr approval mode should be wait, got $MODE"
+# 8. Check denied path: .env.local
+if ! echo "$POLICY" | is_path_denied ".env.local"; then
+  echo "FAIL: .env.local should be denied"
   exit 1
 fi
-echo "PASS: open_pr approval mode is wait"
+echo "PASS: .env.local path is denied"
 
-# 9. Add a pending approval and verify
+# 9. Check floor for issue type: enhancement
+TYPE_FLOOR=$(echo "$POLICY" | get_floor_for_type "enhancement")
+if [[ "$TYPE_FLOOR" != "4" ]]; then
+  echo "FAIL: enhancement floor should be 4, got $TYPE_FLOOR"
+  exit 1
+fi
+echo "PASS: Enhancement floor is 4"
+
+# 10. Check channel type: github_comment is external
+CH_TYPE=$(echo "$POLICY" | get_channel_type "github_comment")
+if [[ "$CH_TYPE" != "external" ]]; then
+  echo "FAIL: github_comment channel type should be external, got $CH_TYPE"
+  exit 1
+fi
+echo "PASS: github_comment channel type is external"
+
+# 11. Check channel type: system is internal
+CH_TYPE=$(echo "$POLICY" | get_channel_type "system")
+if [[ "$CH_TYPE" != "internal" ]]; then
+  echo "FAIL: system channel type should be internal, got $CH_TYPE"
+  exit 1
+fi
+echo "PASS: system channel type is internal"
+
+# 12. Add a pending approval and verify
 add_pending_approval "$REPO" 1 "open_pr" "wait" "Fix login broken"
 COUNT=$(get_pending_count "$REPO")
 if [[ "$COUNT" != "1" ]]; then
@@ -88,7 +109,7 @@ if [[ "$COUNT" != "1" ]]; then
 fi
 echo "PASS: Pending approval added"
 
-# 10. Build and dispatch notification (mock adapter)
+# 13. Build and dispatch notification (mock adapter)
 mkdir -p "$ARGOS_ADAPTER_DIR"
 cat > "$ARGOS_ADAPTER_DIR/mock.sh" << 'MOCK'
 #!/bin/bash
@@ -96,7 +117,7 @@ cat > "${ARGOS_ADAPTER_DIR}/mock-received.json"
 MOCK
 chmod +x "$ARGOS_ADAPTER_DIR/mock.sh"
 
-notify "auto_action_taken" "$REPO" 1 "Login broken" "label" "Applied label: bug" "mock"
+notify "auto_action_taken" "$REPO" 1 "Login broken" "label" "Triaged as bug" "Bug in auth.js:147, high confidence" "mock:internal"
 if [[ ! -f "$ARGOS_ADAPTER_DIR/mock-received.json" ]]; then
   echo "FAIL: notification not dispatched"
   exit 1
@@ -108,7 +129,7 @@ if [[ "$EVENT" != "auto_action_taken" ]]; then
 fi
 echo "PASS: Notification dispatched correctly"
 
-# 11. Update state
+# 14. Update state
 set_last_issue_seen "$REPO" 2
 LAST=$(get_last_issue_seen "$REPO")
 if [[ "$LAST" != "2" ]]; then
@@ -117,7 +138,7 @@ if [[ "$LAST" != "2" ]]; then
 fi
 echo "PASS: State updated with last seen issue"
 
-# 12. Increment action count and verify
+# 15. Increment action count and verify
 increment_actions_count "$REPO"
 ACTIONS=$(get_actions_this_hour "$REPO")
 if [[ "$ACTIONS" != "1" ]]; then
@@ -126,14 +147,7 @@ if [[ "$ACTIONS" != "1" ]]; then
 fi
 echo "PASS: Action counter incremented"
 
-# 13. Check protected path guardrail
-if ! echo "$POLICY" | is_path_protected ".env.local"; then
-  echo "FAIL: .env.local should be protected"
-  exit 1
-fi
-echo "PASS: Protected path guardrail works"
-
-# 14. Filter by labels
+# 16. Filter by labels
 FILTERED=$(echo "$PARSED" | filter_by_labels '["bug"]')
 COUNT=$(echo "$FILTERED" | jq 'length')
 if [[ "$COUNT" != "1" ]]; then
@@ -142,7 +156,7 @@ if [[ "$COUNT" != "1" ]]; then
 fi
 echo "PASS: Label filtering works"
 
-# 15. Check dry_run default is false
+# 17. Check dry_run default is false
 DRY=$(echo "$POLICY" | is_dry_run)
 if [[ "$DRY" != "false" ]]; then
   echo "FAIL: dry_run should be false by default"
@@ -151,4 +165,4 @@ fi
 echo "PASS: Dry run is false by default"
 
 echo ""
-echo "All end-to-end tests passed. (15/15)"
+echo "All end-to-end tests passed. (17/17)"

@@ -1,34 +1,41 @@
 repo: ""
 poll_interval: 5m
 
-actions:
-  auto:
-    - label
-    - comment_triage
-    - assign
-    - close_duplicate
-  approve:
-    - comment_diagnosis
-    - create_branch
-    - push_commits
-    - open_pr
-  deny:
+floors:
+  paths:
+    "src/auth/**": 3
+    "src/payments/**": 4
+    "config/production.*": 5
+    ".env*": 5
+    "*.pem": 5
+    "*.key": 5
+  types:
+    enhancement: 4
+    question: 5
+  authors:
+    trusted: []
+    unknown: 4
+  minimum: 2
+
+deny:
+  actions:
     - close_issue
     - merge_pr
     - force_push
     - delete_branch
+  paths:
+    - ".env*"
+    - "*.secret"
+    - "*.pem"
+    - "*.key"
+    - "config/production.*"
 
-approval_modes:
-  comment_diagnosis:
-    mode: timeout
-    timeout: 2h
-  create_branch:
-    mode: timeout
-    timeout: 4h
-  push_commits:
-    mode: wait
-  open_pr:
-    mode: wait
+guardrails:
+  max_actions_per_hour: 10
+  max_open_prs: 3
+  require_tests: true
+  max_files_changed: 10
+  dry_run: false
 
 filters:
   labels: ["bug", "enhancement", "help-wanted"]
@@ -37,21 +44,10 @@ filters:
   max_age: 7d
 
 notifications:
-  auto_actions:
-    - github_comment
-  approval_needed:
-    - system
-    - github_comment
-  approval_expired:
-    - system
-
-guardrails:
-  max_actions_per_hour: 10
-  max_open_prs: 3
-  require_tests: true
-  max_files_changed: 10
-  protected_paths:
-    - ".env*"
-    - "*.secret"
-    - "config/production.*"
-  dry_run: false
+  channels:
+    - name: github_comment
+      type: external
+    - name: system
+      type: internal
+    - name: session
+      type: internal

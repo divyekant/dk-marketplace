@@ -26,10 +26,12 @@ First time? Argos walks you through a guided 9-step onboarding flow -- one quest
   → jq filter pipeline     (bash -- no LLM)
   → 0 new issues? Exit.    (zero tokens consumed)
   → New issues? Claude activates:
+      → Read project context (CLAUDE.md, README, docs)
       → Classify (bug/enhancement/duplicate/question)
-      → Check policy tiers
-      → Execute allowed actions (label, comment, branch, fix, PR)
-      → Notify via configured adapters
+      → Assess confidence level (1-5)
+      → Apply policy floors (can only escalate)
+      → Execute based on final level
+      → Notify via channels (internal/external content)
       → Store learnings in Memories MCP
 ```
 
@@ -42,18 +44,17 @@ First time? Argos walks you through a guided 9-step onboarding flow -- one quest
 | `/argos-status` | Watched repos, queue depth, recent actions, guardrail utilization |
 | `/argos-approve` | Review and approve/reject pending actions |
 
-## Actions
+## Confidence Levels
 
-| Action | Description | Default Tier |
-|--------|-------------|-------------|
-| `label` | Apply classification label | auto |
-| `comment` | Post diagnostic comment with affected files | auto |
-| `create_branch` | Create a fix branch | approve |
-| `commit_fix` | Commit a code fix | approve |
-| `open_pr` | Open a pull request | approve |
-| `close` | Close duplicate issues | deny |
+| Level | Name | What Argos Does |
+|-------|------|-----------------|
+| 1 | Should Fix | Full autonomy -- fix, test, commit, open PR |
+| 2 | Fix + Summary Review | Fix and PR, human gets summary to glance at |
+| 3 | Fix + Thorough Review | Prepare fix on branch, PR opens after human reviews |
+| 4 | Needs Approval | Investigate only, human decides whether to proceed |
+| 5 | Can't Touch | Label and flag for human attention, no investigation |
 
-Destructive actions (`close_issue`, `merge_pr`, `force_push`, `delete_branch`) are always denied.
+Policy floors can escalate any issue's level based on file paths, issue type, and author trust. For example, `src/auth/**` can be set to always require level 3+ review.
 
 ## Security
 
@@ -63,6 +64,7 @@ Destructive actions (`close_issue`, `merge_pr`, `force_push`, `delete_branch`) a
 - **Protected file paths** -- `.env*`, `secrets/`, `*.pem`, `*.key` blocked from commits
 - **Label whitelist** -- classifications validated against allowed values
 - **Rate limiting** -- max actions per hour (default: 10)
+- **Automatic level 5 on injection** -- prompt injection detection triggers level 5 (can't touch), blocking all autonomous action
 
 ## Project Structure
 

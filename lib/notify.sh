@@ -1,19 +1,20 @@
 #!/bin/bash
 # lib/notify.sh — Notification dispatcher for Argos
-# Routes notifications to pluggable adapters based on policy config
+# Routes notifications to pluggable adapters with audience-aware content
 
 ARGOS_PLUGIN_ROOT="${ARGOS_PLUGIN_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 ARGOS_ADAPTER_DIR="${ARGOS_ADAPTER_DIR:-$ARGOS_PLUGIN_ROOT/lib/adapters}"
 
 build_payload() {
-  local event="$1" repo="$2" issue="$3" title="$4" action="$5" details="$6"
+  local event="$1" repo="$2" issue="$3" title="$4" action="$5" content_external="$6" content_internal="$7"
   jq -n \
     --arg event "$event" \
     --arg repo "$repo" \
     --argjson issue "$issue" \
     --arg title "$title" \
     --arg action "$action" \
-    --arg details "$details" \
+    --arg content_external "$content_external" \
+    --arg content_internal "$content_internal" \
     --arg timestamp "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
     '{
       event: $event,
@@ -21,34 +22,42 @@ build_payload() {
       issue: $issue,
       title: $title,
       action: $action,
-      details: $details,
+      content_external: $content_external,
+      content_internal: $content_internal,
       timestamp: $timestamp
     }'
 }
 
 dispatch_to_adapter() {
   local adapter_name="$1"
-  # SECURITY: Validate adapter name to prevent path traversal (e.g. ../../tmp/evil)
+  local channel_type="${2:-internal}"
+  # SECURITY: Validate adapter name to prevent path traversal
   if [[ ! "$adapter_name" =~ ^[a-zA-Z0-9_-]+$ ]]; then
     echo "Error: invalid adapter name '$adapter_name' — must be alphanumeric/hyphen/underscore only" >&2
     return 1
   fi
   local adapter_script="$ARGOS_ADAPTER_DIR/${adapter_name}.sh"
   if [[ -x "$adapter_script" ]]; then
-    cat | bash "$adapter_script"
+    # Select the right content field based on channel type and inject as 'details'
+    local content_field="content_internal"
+    [[ "$channel_type" == "external" ]] && content_field="content_external"
+    cat | jq --arg field "$content_field" '. + {details: .[$field]}' | bash "$adapter_script"
   else
     echo "Warning: adapter '$adapter_name' not found at $adapter_script" >&2
   fi
 }
 
 notify() {
-  local event="$1" repo="$2" issue="$3" title="$4" action="$5" details="$6"
-  shift 6
-  local adapters=("$@")
+  local event="$1" repo="$2" issue="$3" title="$4" action="$5" content_external="$6" content_internal="$7"
+  shift 7
+  # Remaining args are "name:type" pairs (e.g., "github_comment:external" "system:internal")
+  local channels=("$@")
   local payload
-  payload=$(build_payload "$event" "$repo" "$issue" "$title" "$action" "$details")
-  for adapter in "${adapters[@]}"; do
-    echo "$payload" | dispatch_to_adapter "$adapter" &
+  payload=$(build_payload "$event" "$repo" "$issue" "$title" "$action" "$content_external" "$content_internal")
+  for channel in "${channels[@]}"; do
+    local name="${channel%%:*}"
+    local type="${channel##*:}"
+    echo "$payload" | dispatch_to_adapter "$name" "$type" &
   done
   wait
 }
