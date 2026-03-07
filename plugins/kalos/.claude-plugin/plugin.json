@@ -2,7 +2,7 @@
   "name": "kalos",
   "description": "Format-agnostic design governance tool — define design tokens and rules, enforce them across Pencil, Tailwind, and more",
   "version": "0.3.0",
-  "author": "Divyekant",
+  "author": { "name": "Divyekant" },
   "homepage": "https://github.com/divyekant/kalos",
   "repository": "https://github.com/divyekant/kalos",
   "license": "MIT",
