@@ -8,7 +8,7 @@ The All-Seeing Issue Guardian -- a Claude Code plugin that watches GitHub repos 
 
 **Local-first investigation.** Unlike server-side tools, Argos runs on your machine with full access to your codebase. It can trace through source files, check test coverage, and identify affected functions -- the same investigation you would do manually, done before you context-switch.
 
-**Policy-governed autonomy.** Every action falls into one of three tiers: **auto** (execute immediately), **approve** (queue for your review), or **deny** (never execute). Hard guardrails enforce rate limits, protected file paths, and maximum concurrent PRs regardless of policy settings.
+**Policy-governed autonomy.** Every issue is assigned a confidence level (1-5) that determines Argos's autonomy. Policy floors escalate oversight for sensitive paths, issue types, and unknown authors. Hard guardrails enforce rate limits, denied file paths, and maximum concurrent PRs regardless of confidence level.
 
 ## Quick Start
 
@@ -79,7 +79,7 @@ argos/
     state.sh                        # Watermark and state management
     notify.sh                       # Notification dispatcher
     policy.sh                       # YAML policy loader
-    adapters/                       # github-comment, system (macOS), session
+    adapters/                       # github-comment, system (macOS), session, pheme (MCP)
   config/default-policy.yaml        # Default policy template
   tests/                            # Bash test suite (TDD)
   docs/generated/                   # Hermes-generated docs (internal/external/marketing)
@@ -92,6 +92,7 @@ argos/
 - **python3** + **pyyaml** -- YAML policy parsing
 - **Memories MCP** -- Cross-session learning
 - **Claude Code** -- Runtime environment
+- **Pheme MCP** *(optional)* -- Multi-channel notifications (Slack, Telegram, email, etc.)
 
 ## Documentation
 
@@ -103,9 +104,14 @@ Full documentation is generated via [Hermes](https://github.com/divyekant/hermes
 
 See [docs/generated/index.md](docs/generated/index.md) for the full index.
 
+## Migration from v0.1.0
+
+If you have an existing v0.1.0 policy (action-based tiers), Argos will detect the old format and refuse to process it. Run `/watch owner/repo` to re-run onboarding and migrate to the new confidence model. Your old policy will be replaced with the new floors-based format.
+
 ## Design
 
-See [docs/plans/2026-03-06-argos-design.md](docs/plans/2026-03-06-argos-design.md) for the full design document.
+- [docs/plans/2026-03-07-confidence-model-design.md](docs/plans/2026-03-07-confidence-model-design.md) -- v0.2.0 confidence-driven triage model
+- [docs/plans/2026-03-06-argos-design.md](docs/plans/2026-03-06-argos-design.md) -- original design document
 
 ## License
 

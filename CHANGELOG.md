@@ -24,6 +24,8 @@ All notable changes to Argos will be documented in this file.
 - `apply_floors` — computes effective level from AI assessment + policy constraints
 - `is_action_denied` / `is_path_denied` — hard denial checks
 - `get_channel_type` / `get_channels_by_type` — audience-aware notification routing
+- `check_policy_format` — detects old action-based policies and refuses to process, directs user to `/watch` to migrate
+- Pheme integration — optional MCP-level notification channel with urgency mapping (L1→low, L3-5→high, injection→critical)
 - Calibration memories: stores human approve/reject decisions for future triage tuning
 - Product boundary awareness via project docs and Carto integration
 
