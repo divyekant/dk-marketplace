@@ -109,6 +109,14 @@
       "source": "./plugins/argos",
       "category": "development",
       "strict": false
+    },
+    {
+      "name": "pheme",
+      "description": "Universal communication layer -- agents notify humans across any channel",
+      "version": "0.1.0",
+      "source": "./plugins/pheme",
+      "category": "utilities",
+      "strict": false
     }
   ]
 }
