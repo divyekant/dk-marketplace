@@ -1,0 +1,30 @@
+# Apollo config for Argos
+extends: oss
+version: 0.1.0
+
+stack:
+  language: bash
+  package_manager: null
+  test_framework: bash
+
+git:
+  commit_style: conventional
+  auto_commit: false
+  branch_strategy: feature
+
+testing:
+  code:
+    approach: tdd
+    framework: bash
+    run_before_commit: true
+
+docs:
+  readme: true
+  changelog: true
+  architecture: true
+
+release:
+  versioning: semver
+  changelog: auto
+  tag_on_release: true
+  publish: false

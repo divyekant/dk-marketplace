@@ -1,0 +1,57 @@
+repo: ""
+poll_interval: 5m
+
+actions:
+  auto:
+    - label
+    - comment_triage
+    - assign
+    - close_duplicate
+  approve:
+    - comment_diagnosis
+    - create_branch
+    - push_commits
+    - open_pr
+  deny:
+    - close_issue
+    - merge_pr
+    - force_push
+    - delete_branch
+
+approval_modes:
+  comment_diagnosis:
+    mode: timeout
+    timeout: 2h
+  create_branch:
+    mode: timeout
+    timeout: 4h
+  push_commits:
+    mode: wait
+  open_pr:
+    mode: wait
+
+filters:
+  labels: ["bug", "enhancement", "help-wanted"]
+  ignore_labels: ["wontfix", "on-hold", "discussion"]
+  only_new: true
+  max_age: 7d
+
+notifications:
+  auto_actions:
+    - github_comment
+  approval_needed:
+    - system
+    - github_comment
+  approval_expired:
+    - system
+
+guardrails:
+  max_actions_per_hour: 10
+  max_open_prs: 3
+  require_tests: true
+  max_files_changed: 10
+  protected_paths:
+    - ".env*"
+    - "*.secret"
+    - "config/production.*"
+  dry_run: false
