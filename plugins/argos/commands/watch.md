@@ -33,6 +33,30 @@ Run these checks before proceeding:
    gh repo view "$REPO" --json name -q .name
    ```
 
+## Re-watch Handling
+
+Check if a policy file already exists for this repo:
+```bash
+SAFE_NAME="${REPO//\//-}"
+POLICY_FILE="$HOME/.claude/argos/policies/${SAFE_NAME}.yaml"
+```
+
+If the policy file exists, read the current poll interval from it and ask:
+
+> **You're already watching `<owner/repo>` (every <interval>). What would you like to do?**
+>
+> 1. **Update policy** -- re-run onboarding to change settings
+> 2. **Change interval** -- keep policy, adjust poll frequency
+> 3. **Restart loop** -- same settings, fresh start
+
+Act accordingly:
+
+- **Option 1:** Delete the existing policy file and proceed to the **Onboarding Flow** below.
+- **Option 2:** Ask for the new interval, update `poll_interval` in the policy file, then proceed to **Start Watching**.
+- **Option 3:** Proceed directly to **Start Watching** with the existing policy.
+
+If no policy file exists, proceed to the **Onboarding Flow**.
+
 ## Policy Check
 
 Check if a policy file exists for this repo:
@@ -41,10 +65,13 @@ SAFE_NAME="${REPO//\//-}"
 POLICY_FILE="$HOME/.claude/argos/policies/${SAFE_NAME}.yaml"
 ```
 
-- If the policy file exists, load it and proceed to **Dry Run**.
+- If the policy file exists and uses the **new format** (has a `floors:` key), proceed to **Dry Run**.
+- If the policy file exists but uses the **old format** (has an `actions:` key instead of `floors:`), tell the user:
+  > "Your policy for `<owner/repo>` uses the old action-based format. The new confidence model replaces action tiers with oversight levels. I'll re-run onboarding to migrate your settings."
+  Then proceed to the **Onboarding Flow**.
 - If no policy file exists, run the **Onboarding Flow** below.
 
-## Onboarding Flow (if no policy exists)
+## Onboarding Flow
 
 Guide the user through creating a policy for this repo. Ask one question at a time, wait for the answer, then proceed to the next. Present each question with checkbox-style options and clearly marked defaults.
 
@@ -66,66 +93,80 @@ Ask:
 
 Store the user's selections as `filter_labels`. Default: `["bug", "enhancement"]`.
 
-### Step 2: Auto Actions (no approval needed)
+### Step 2: Confidence Floor
 
 Ask:
 
-> **What should Argos do automatically, without asking you first?**
+> **What's the minimum oversight level for all issues?**
 >
-> These actions happen immediately when a matching issue is found:
+> This sets a blanket floor -- Argos will never operate below this level of oversight, regardless of how confident it is.
 >
-> - `[x]` **label** -- apply triage labels (e.g., `priority`, `area/*`)
-> - `[x]` **comment_triage** -- post a triage comment acknowledging the issue, asking clarifying questions if needed
-> - `[ ]` **assign** -- auto-assign the issue to a team member based on area
-> - `[x]` **close_duplicate** -- detect and close duplicate issues with a link to the original
+> 1. **Level 1 -- Fully autonomous** -- Argos can fix things end-to-end without any review. *(For mature, well-tested repos where you trust Argos completely.)*
+> 2. **Level 2 -- Fix + summary review** -- Argos fixes things but you get a concise summary to glance at. *(Recommended for most repos.)*
+> 3. **Level 3 -- Fix + thorough review** -- Argos fixes things but you review the full diff before it goes live. *(For repos where you want close oversight.)*
+> 4. **Level 4 -- Investigate only** -- Argos only investigates and reports. You decide what to do. *(Maximum control.)*
 >
-> Which of these should Argos handle on its own?
+> Recommended: **Level 2**
 
-Store the user's selections as `actions_auto`. Default: `["label", "comment_triage", "close_duplicate"]`.
+Store as `floors.minimum`. Default: `2`.
 
-### Step 3: Approve Actions (require your sign-off)
+### Step 3: Sensitive Paths
 
 Ask:
 
-> **What actions should Argos propose but wait for your approval?**
+> **Any paths that should always require higher oversight?**
 >
-> These actions are prepared but only executed after you approve them via `/argos-approve`:
+> Fixes touching these paths will be escalated to at least the specified level, even if Argos is confident about the fix. Here are some sensible defaults:
 >
-> - `[x]` **comment_diagnosis** -- post a root-cause analysis comment on the issue
-> - `[x]` **create_branch** -- create a fix branch from the default branch
-> - `[x]` **push_commits** -- write and push code changes to the fix branch
-> - `[x]` **open_pr** -- open a pull request with the fix
+> | Path Pattern | Minimum Level | Reason |
+> |-------------|---------------|--------|
+> | `src/auth/**` | 3 | Authentication logic -- always review thoroughly |
+> | `src/payments/**` | 4 | Payment processing -- human approval required |
+> | `config/production.*` | 5 | Production config -- can't touch |
 >
-> Which of these should require your approval?
+> You can **add**, **remove**, or **adjust** levels for any path.
+> Type paths in glob format (e.g., `src/database/**`) with a level number.
 
-Store the user's selections as `actions_approve`. Default: `["comment_diagnosis", "create_branch", "push_commits", "open_pr"]`.
+Store as `floors.paths`. Defaults:
+- `"src/auth/**": 3`
+- `"src/payments/**": 4`
+- `"config/production.*": 5`
 
-### Step 4: Approval Modes
+### Step 4: Enhancement Handling
 
-For each action the user placed in the approve tier, ask:
+Ask:
 
-> **How should Argos handle approval for `<action>`?**
+> **How should Argos handle enhancement/feature requests?**
 >
-> Choose one:
+> Enhancements expand product surface area and usually need human judgment. Choose a default oversight level:
 >
-> 1. **wait** -- Argos blocks until you explicitly approve or reject. Nothing happens without your say-so. *(safest)*
-> 2. **timeout** `<duration>` -- Argos waits for your response; if you don't respond within the timeout, the action is **skipped**. *(safe default for advisory actions)*
-> 3. **default** `<duration>` -- Argos waits for your response; if you don't respond within the timeout, the action **proceeds automatically**. *(use for low-risk actions you usually approve)*
+> 1. **Level 4 -- Investigate only** -- Argos analyzes the request and writes up a recommendation, but you decide. *(Recommended)*
+> 2. **Level 5 -- Can't touch** -- Argos labels the issue and flags it for you. No investigation, no fix attempt.
+>
+> Questions and support requests are always set to Level 5 (flag only).
+>
+> Recommended: **Level 4**
 
-Present sensible per-action defaults:
+Store as `floors.types.enhancement`. Default: `4`.
+Always set `floors.types.question` to `5`.
 
-| Action              | Default Mode  | Default Timeout | Rationale                                      |
-|---------------------|---------------|-----------------|-------------------------------------------------|
-| comment_diagnosis   | timeout       | 2h              | Advisory comment -- safe to skip if unreviewed  |
-| create_branch       | default       | 4h              | Low risk -- just a branch, no code yet          |
-| push_commits        | wait          | --              | Code changes -- always review                   |
-| open_pr             | wait          | --              | Public-facing -- always review                  |
+### Step 5: Author Trust
 
-Ask: "These are the recommended defaults. Want to adjust any of them?"
+Ask:
 
-Store as `approval_modes` map.
+> **Should Argos treat unknown contributors differently?**
+>
+> Anyone can open an issue on a public repo. Unknown authors could steer Argos to investigate or fix arbitrary parts of the codebase. Setting a floor for unknown authors adds a safety layer.
+>
+> - `[x]` **Yes** -- unknown/first-time authors floor at **Level 4** (investigate only, you decide). *(Recommended)*
+> - `[ ]` **No** -- treat all authors the same, let the AI judge.
+>
+> You can also add **trusted GitHub usernames** who bypass this floor:
+> *(Comma-separated, e.g., `alice, bob, carol`)*
 
-### Step 5: Poll Interval
+Store as `floors.authors.unknown` (default: `4`) and `floors.authors.trusted` (default: `[]`).
+
+### Step 6: Poll Interval
 
 Ask:
 
@@ -142,21 +183,28 @@ Ask:
 
 Store as `poll_interval`. Default: `5m`.
 
-### Step 6: Notification Channels
+### Step 7: Notification Channels
 
 Ask:
 
 > **How should Argos notify you about its actions?**
 >
-> - `[x]` **github_comment** -- post status updates as comments on the issue itself
-> - `[x]` **system** -- macOS system notification (shows in Notification Center)
-> - `[ ]` **session** -- inject a context note into the current Claude Code session
+> Each channel is tagged as **external** (visible to anyone) or **internal** (visible only to you). Argos tailors notification content based on the audience -- external notifications are sanitized and minimal, internal ones include full analysis.
+>
+> - `[x]` **github_comment** *(external)* -- post status updates as comments on the issue itself
+> - `[x]` **system** *(internal)* -- macOS system notification (shows in Notification Center)
+> - `[ ]` **session** *(internal)* -- inject a context note into the current Claude Code session
+> - `[ ]` **pheme** *(internal)* -- send via Pheme to Slack, Telegram, email, etc. *(requires Pheme MCP server)*
 >
 > For auto actions, Argos always posts a GitHub comment. This controls additional channels.
+>
+> If the user selects **pheme**, verify the Pheme MCP server is available by calling `mcp__pheme__list_channels()`. If it's not available, warn the user and skip pheme.
 
-Store as `notification_channels`. Default: `["github_comment", "system"]`.
+Store as `notifications.channels` array with `name` and `type` for each. Defaults:
+- `{ name: "github_comment", type: "external" }`
+- `{ name: "system", type: "internal" }`
 
-### Step 7: Guardrails
+### Step 8: Guardrails
 
 Present the default guardrails and ask if the user wants to adjust:
 
@@ -164,18 +212,21 @@ Present the default guardrails and ask if the user wants to adjust:
 >
 > | Guardrail              | Default        | Description                                           |
 > |------------------------|----------------|-------------------------------------------------------|
-> | `max_actions_per_hour` | **10**         | Hard cap on total actions (auto + approved) per hour  |
+> | `max_actions_per_hour` | **10**         | Hard cap on total actions per hour                    |
 > | `max_open_prs`         | **3**          | Won't open new PRs if this many Argos PRs are open    |
 > | `require_tests`        | **true**       | Refuse to open a PR unless it includes test changes   |
 > | `max_files_changed`    | **10**         | Skip issues whose fix would touch more than N files   |
-> | `protected_paths`      | `.env*`, `*.secret`, `config/production.*` | Never modify files matching these globs |
 > | `dry_run`              | **false**      | If true, Argos logs what it would do but takes no action |
 >
-> **These defaults are intentionally conservative.** Want to adjust any of them?
+> **Hard-coded denials (cannot be changed):**
+> - **Denied actions:** `close_issue`, `merge_pr`, `force_push`, `delete_branch` -- always denied regardless of confidence level.
+> - **Denied paths:** `.env*`, `*.secret`, `*.pem`, `*.key`, `config/production.*` -- never modified regardless of confidence level.
+>
+> **These defaults are intentionally conservative.** Want to adjust any of the guardrail values?
 
-Store as `guardrails` map.
+Store as `guardrails` map. The `deny` section is hardcoded and not user-adjustable.
 
-### Step 8: Generate Policy YAML
+### Step 9: Generate Policy YAML
 
 Build the policy YAML from all collected answers. Use this template, filling in the user's selections:
 
@@ -183,53 +234,58 @@ Build the policy YAML from all collected answers. Use this template, filling in 
 repo: "<owner>/<repo>"
 poll_interval: <poll_interval>
 
-actions:
-  auto:
-    <for each auto action>
-    - <action>
-  approve:
-    <for each approve action>
-    - <action>
-  deny:
+floors:
+  paths:
+    <for each path>
+    "<pattern>": <level>
+  types:
+    enhancement: <level>
+    question: 5
+  authors:
+    trusted: <trusted_list>
+    unknown: <unknown_floor>
+  minimum: <minimum>
+
+deny:
+  actions:
     - close_issue
     - merge_pr
     - force_push
     - delete_branch
-
-approval_modes:
-  <for each approve action>
-  <action>:
-    mode: <mode>
-    timeout: <timeout if mode is timeout or default>
-
-filters:
-  labels: <filter_labels array>
-  ignore_labels: ["wontfix", "on-hold", "discussion"]
-  only_new: true
-  max_age: 7d
-
-notifications:
-  auto_actions:
-    - github_comment
-  approval_needed:
-    <notification_channels as list>
-  approval_expired:
-    - system
+  paths:
+    - ".env*"
+    - "*.secret"
+    - "*.pem"
+    - "*.key"
+    - "config/production.*"
 
 guardrails:
   max_actions_per_hour: <value>
   max_open_prs: <value>
   require_tests: <value>
   max_files_changed: <value>
-  protected_paths:
-    <for each pattern>
-    - "<pattern>"
   dry_run: <value>
+
+filters:
+  labels: <filter_labels>
+  ignore_labels: ["wontfix", "on-hold", "discussion"]
+  only_new: true
+  max_age: 7d
+
+notifications:
+  channels:
+    <for each channel>
+    - name: <name>
+      type: <type>
 ```
 
-Ensure the `deny` list always includes `close_issue`, `merge_pr`, `force_push`, and `delete_branch` -- these are hard-coded safety defaults the user cannot remove during onboarding.
+Ensure the `deny.actions` list always includes `close_issue`, `merge_pr`, `force_push`, and `delete_branch` -- these are hard-coded safety defaults the user cannot remove during onboarding.
 
-Ensure `ignore_labels` always includes `wontfix`, `on-hold`, `discussion`.
+Ensure the `deny.paths` list always includes `.env*`, `*.secret`, `*.pem`, `*.key`, and `config/production.*`.
+
+Ensure `filters.ignore_labels` always includes `wontfix`, `on-hold`, `discussion`.
+
+Ensure `floors.types.question` is always `5`.
 
 Write the generated YAML to the policy file:
 ```bash
@@ -239,11 +295,11 @@ cat > "$POLICY_FILE" << 'POLICY_EOF'
 POLICY_EOF
 ```
 
-### Step 9: Confirmation
+### Confirmation
 
 Show the user the full generated YAML and ask:
 
-> **Here's your Argos policy for `<owner>/<repo>`:**
+> **Here's your Argos policy for `<owner/repo>`:**
 >
 > ```yaml
 > <full generated YAML>
@@ -275,20 +331,23 @@ echo "$ISSUES" | jq -r '.[] | [.number, .title, (.labels | join(",")), .author] 
 
 ### Evaluate each issue against the policy
 
-For each issue returned, determine what Argos WOULD do based on the policy tiers. Present results as a table:
+For each issue returned, evaluate it against the policy's floors and constraints. Classify each issue and estimate what confidence level the AI would assign. Present results as a table:
 
-> **Dry run results for `<owner>/<repo>`** -- showing what Argos would do for current open issues:
+> **Dry run results for `<owner/repo>`** -- showing how Argos would handle current open issues:
 >
-> | Issue # | Title (truncated) | Auto Actions | Approve Actions | Tier |
-> |---------|-------------------|--------------|-----------------|------|
-> | #42 | Login crash on iOS 18 | label, comment_triage | comment_diagnosis, create_branch, push_commits, open_pr | approve |
-> | #38 | Add dark mode toggle | label, comment_triage | comment_diagnosis, create_branch, push_commits, open_pr | approve |
-> | #35 | Duplicate of #28 | close_duplicate | -- | auto |
+> | Issue # | Title | Classification | Estimated Level | Reason |
+> |---------|-------|---------------|----------------|--------|
+> | #42 | Login crash on iOS 18 | bug | Level 2 (fix + summary) | Isolated crash, clear repro, 1 file |
+> | #38 | Add dark mode toggle | enhancement | Level 4 (investigate only) | Enhancement floor = 4 |
+> | #35 | Duplicate of #28 | bug | Level 1 (auto-fix) | Obvious duplicate, link and close |
+> | #29 | Update auth token rotation | bug | Level 3 (fix + thorough) | Touches src/auth/**, floor = 3 |
 >
-> **Legend:**
-> - **Auto Actions** -- would execute immediately, no approval needed
-> - **Approve Actions** -- would be queued, waiting for your `/argos-approve`
-> - **Tier** -- highest tier action determines the row's tier (`auto` = fully automatic, `approve` = needs sign-off)
+> **Level legend:**
+> - **Level 1** -- fully autonomous, no review
+> - **Level 2** -- fix + summary review
+> - **Level 3** -- fix + thorough review
+> - **Level 4** -- investigate only, human decides
+> - **Level 5** -- can't touch, flagged for human
 
 If no issues match, say:
 
@@ -306,13 +365,18 @@ If user confirms:
 mkdir -p "$HOME/.claude/argos/state"
 ```
 
+Then directly start the loop by invoking the Skill tool:
+
+```
+Invoke Skill: loop
+Args: "<poll_interval> invoke the argos skill for <owner/repo>"
+```
+
 Tell the user:
-"Argos is now watching `owner/repo`. I'll check every [interval] for new issues.
 
-To start the loop, run:
-`/loop [interval] invoke the argos skill for [owner/repo]`
+"Argos is now watching `owner/repo` every <interval>. The loop is running.
 
-Other commands:
+Commands:
 - `/argos-status` -- see what's happening
-- `/argos-approve #N` -- approve pending actions
+- `/argos-approve` -- approve pending actions
 - `/unwatch owner/repo` -- stop watching"

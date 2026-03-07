@@ -2,6 +2,36 @@
 
 All notable changes to Argos will be documented in this file.
 
+## [0.2.0] - 2026-03-07
+
+### Changed
+- **Breaking:** Replace action-based tiers (auto/approve/deny) with 5-level confidence model
+  - Level 1: Should Fix (full autonomy)
+  - Level 2: Fix + Summary Review (human glances at summary)
+  - Level 3: Fix + Thorough Review (human reviews diff before PR opens)
+  - Level 4: Needs Approval (investigate only, human decides)
+  - Level 5: Can't Touch (label and flag, no action)
+- Policy YAML redesigned: `floors` (paths, types, authors, minimum) replace `actions` tiers
+- `deny` section replaces `protected_paths` — covers both actions and file paths
+- Notification channels tagged `internal`/`external` — content shaped by audience
+- `/watch` auto-starts `/loop` after onboarding (no manual copy-paste)
+- `/watch` handles re-watch: asks to update policy, change interval, or restart
+- Session-start hook simplified: no timeout logic, just pending count
+- Onboarding flow asks about confidence floors, sensitive paths, author trust
+
+### Added
+- Context stack: Argos reads project files, Carto data, and Memories before triage
+- `apply_floors` — computes effective level from AI assessment + policy constraints
+- `is_action_denied` / `is_path_denied` — hard denial checks
+- `get_channel_type` / `get_channels_by_type` — audience-aware notification routing
+- Calibration memories: stores human approve/reject decisions for future triage tuning
+- Product boundary awareness via project docs and Carto integration
+
+### Removed
+- `get_action_tier`, `get_approval_mode`, `get_approval_timeout` — replaced by floors
+- `is_path_protected`, `get_notification_channels` — replaced by deny/channel functions
+- Timeout/wait/default approval modes — levels define oversight implicitly
+
 ## [0.1.0] - 2026-03-06
 
 ### Added
