@@ -1,6 +1,6 @@
 # Argos
 
-The All-Seeing Issue Guardian -- a Claude Code plugin that watches GitHub repos for new issues, investigates them against your local codebase, and acts within boundaries you define.
+The All-Seeing Issue Guardian -- an issue-watching skill and automation layer for Claude Code and Codex that investigates GitHub repos against your local codebase and acts within boundaries you define.
 
 ## Why Argos?
 
@@ -8,9 +8,29 @@ The All-Seeing Issue Guardian -- a Claude Code plugin that watches GitHub repos 
 
 **Local-first investigation.** Unlike server-side tools, Argos runs on your machine with full access to your codebase. It can trace through source files, check test coverage, and identify affected functions -- the same investigation you would do manually, done before you context-switch.
 
-**Policy-governed autonomy.** Every action falls into one of three tiers: **auto** (execute immediately), **approve** (queue for your review), or **deny** (never execute). Hard guardrails enforce rate limits, protected file paths, and maximum concurrent PRs regardless of policy settings.
+**Policy-governed autonomy.** Every issue is assigned a confidence level (1-5) that determines Argos's autonomy. Policy floors escalate oversight for sensitive paths, issue types, and unknown authors. Hard guardrails enforce rate limits, denied file paths, and maximum concurrent PRs regardless of confidence level.
 
 ## Quick Start
+
+### In Codex
+
+```bash
+git clone https://github.com/divyekant/argos.git ~/.codex/argos
+mkdir -p ~/.agents/skills
+ln -s ~/.codex/argos/skills/argos ~/.agents/skills/argos
+```
+
+Restart Codex after installation so it discovers the skill.
+
+Invoke Argos in natural language:
+
+```text
+Use Argos to triage issues for owner/repo.
+```
+
+Detailed Codex instructions: [`/.codex/INSTALL.md`](.codex/INSTALL.md)
+
+### In Claude Code
 
 ```
 /watch owner/repo
@@ -26,10 +46,12 @@ First time? Argos walks you through a guided 9-step onboarding flow -- one quest
   → jq filter pipeline     (bash -- no LLM)
   → 0 new issues? Exit.    (zero tokens consumed)
   → New issues? Claude activates:
+      → Read project context (CLAUDE.md or AGENTS.md, README, docs)
       → Classify (bug/enhancement/duplicate/question)
-      → Check policy tiers
-      → Execute allowed actions (label, comment, branch, fix, PR)
-      → Notify via configured adapters
+      → Assess confidence level (1-5)
+      → Apply policy floors (can only escalate)
+      → Execute based on final level
+      → Notify via channels (internal/external content)
       → Store learnings in Memories MCP
 ```
 
@@ -42,18 +64,17 @@ First time? Argos walks you through a guided 9-step onboarding flow -- one quest
 | `/argos-status` | Watched repos, queue depth, recent actions, guardrail utilization |
 | `/argos-approve` | Review and approve/reject pending actions |
 
-## Actions
+## Confidence Levels
 
-| Action | Description | Default Tier |
-|--------|-------------|-------------|
-| `label` | Apply classification label | auto |
-| `comment` | Post diagnostic comment with affected files | auto |
-| `create_branch` | Create a fix branch | approve |
-| `commit_fix` | Commit a code fix | approve |
-| `open_pr` | Open a pull request | approve |
-| `close` | Close duplicate issues | deny |
+| Level | Name | What Argos Does |
+|-------|------|-----------------|
+| 1 | Should Fix | Full autonomy -- fix, test, commit, open PR |
+| 2 | Fix + Summary Review | Fix and PR, human gets summary to glance at |
+| 3 | Fix + Thorough Review | Prepare fix on branch, PR opens after human reviews |
+| 4 | Needs Approval | Investigate only, human decides whether to proceed |
+| 5 | Can't Touch | Label and flag for human attention, no investigation |
 
-Destructive actions (`close_issue`, `merge_pr`, `force_push`, `delete_branch`) are always denied.
+Policy floors can escalate any issue's level based on file paths, issue type, and author trust. For example, `src/auth/**` can be set to always require level 3+ review.
 
 ## Security
 
@@ -63,6 +84,7 @@ Destructive actions (`close_issue`, `merge_pr`, `force_push`, `delete_branch`) a
 - **Protected file paths** -- `.env*`, `secrets/`, `*.pem`, `*.key` blocked from commits
 - **Label whitelist** -- classifications validated against allowed values
 - **Rate limiting** -- max actions per hour (default: 10)
+- **Automatic level 5 on injection** -- prompt injection detection triggers level 5 (can't touch), blocking all autonomous action
 
 ## Project Structure
 
@@ -77,7 +99,7 @@ argos/
     state.sh                        # Watermark and state management
     notify.sh                       # Notification dispatcher
     policy.sh                       # YAML policy loader
-    adapters/                       # github-comment, system (macOS), session
+    adapters/                       # github-comment, system (macOS), session, pheme (MCP)
   config/default-policy.yaml        # Default policy template
   tests/                            # Bash test suite (TDD)
   docs/generated/                   # Hermes-generated docs (internal/external/marketing)
@@ -89,7 +111,8 @@ argos/
 - **jq** -- JSON processor
 - **python3** + **pyyaml** -- YAML policy parsing
 - **Memories MCP** -- Cross-session learning
-- **Claude Code** -- Runtime environment
+- **Claude Code or Codex** -- Runtime environment
+- **Pheme MCP** *(optional)* -- Multi-channel notifications (Slack, Telegram, email, etc.)
 
 ## Documentation
 
@@ -101,10 +124,16 @@ Full documentation is generated via [Hermes](https://github.com/divyekant/hermes
 
 See [docs/generated/index.md](docs/generated/index.md) for the full index.
 
+## Migration from v0.1.0
+
+If you have an existing v0.1.0 policy (action-based tiers), Argos will detect the old format and refuse to process it. Run `/watch owner/repo` to re-run onboarding and migrate to the new confidence model. Your old policy will be replaced with the new floors-based format.
+
 ## Design
 
-See [docs/plans/2026-03-06-argos-design.md](docs/plans/2026-03-06-argos-design.md) for the full design document.
+- [docs/plans/2026-03-07-confidence-model-design.md](docs/plans/2026-03-07-confidence-model-design.md) -- v0.2.0 confidence-driven triage model
+- [docs/plans/2026-03-06-argos-design.md](docs/plans/2026-03-06-argos-design.md) -- original design document
 
 ## License
 
 MIT
+These slash commands are Claude Code plugin commands. In Codex, invoke the Argos skill directly in natural language instead.

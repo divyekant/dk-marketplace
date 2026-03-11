@@ -16,14 +16,33 @@ Parse the repo from arguments (owner/repo format).
 
 ## Stop Watching
 
-1. Clean up state file (optionally -- ask user if they want to preserve history):
+1. Clean up worktrees and branches used for PR reviews:
    ```bash
    SAFE_NAME="${REPO//\//-}"
+   PROJECT_PATH=$(jq -r '.project_path // empty' "$HOME/.claude/argos/state/${SAFE_NAME}.json" 2>/dev/null)
+   if [[ -n "$PROJECT_PATH" ]]; then
+     # Remove all Argos worktrees
+     for wt in "$PROJECT_PATH/.argos/worktrees"/*/; do
+       if [[ -d "$wt" ]]; then
+         git -C "$PROJECT_PATH" worktree remove --force "$wt" 2>/dev/null
+       fi
+     done
+     rm -rf "$PROJECT_PATH/.argos/worktrees" 2>/dev/null
+     # Clean up local argos/* branches
+     git -C "$PROJECT_PATH" branch --list 'argos/*' | while read -r branch; do
+       git -C "$PROJECT_PATH" branch -D "$branch" 2>/dev/null
+     done
+   fi
+   ```
+
+2. Clean up state file (optionally -- ask user if they want to preserve history):
+   ```bash
    STATE_FILE="$HOME/.claude/argos/state/${SAFE_NAME}.json"
    ```
 
-2. Note: The `/loop` that was running the Argos skill for this repo will need to be stopped manually by the user (CC doesn't have a /loop stop API yet). Tell the user to stop the loop.
+3. Warn the user clearly:
+   "The polling loop is still running — stop it manually (CC doesn't have a /loop stop API yet). Your policy and state have been cleaned up."
 
-3. Optionally remove the policy file (ask first -- user may want to keep it for later).
+4. Optionally remove the policy file (ask first -- user may want to keep it for later).
 
-4. Confirm: "Argos has stopped watching `owner/repo`."
+5. Confirm: "Argos has stopped watching `owner/repo`."

@@ -34,14 +34,14 @@ If not found: "No pending approval found for issue #N. Run `/argos-status` to se
 
 ## If Approving
 
-1. Show the user what will be executed:
-   "Approving: [action] on [repo]#[issue] -- [summary]"
+### Issue Approvals (type == "issue" or null)
 
-2. Source the relevant lib scripts and execute the action:
-   - For `comment_diagnosis`: Read codebase, post analysis comment
-   - For `create_branch`: Create and push the branch
-   - For `push_commits`: Implement the fix, run tests, push
-   - For `open_pr`: Create PR linking to the issue
+1. Show the user what will be executed:
+   "Approving: level [N] action on [repo]#[issue] -- [summary]"
+
+2. The pending approval entry stores a `level_N` action field. Execute based on the level:
+   - For **level 3** (thorough review): The fix is already on a branch. Open the PR linking to the issue.
+   - For **level 4** (needs approval): Proceed with the recommended approach — create branch, implement the fix, run tests, push, and open PR.
 
 3. Remove from pending approvals:
    ```bash
@@ -51,11 +51,44 @@ If not found: "No pending approval found for issue #N. Run `/argos-status` to se
 
 4. Send notification via configured channels
 
-5. Store action in memories
+5. Store calibration memory so Argos learns from human decisions:
+   ```
+   memory_add: "argos/<owner>/<repo>/calibration: level <N> for <issue-type> — human approved. Reason: <if given>"
+   ```
+
+### PR Review Approvals (type == "pr")
+
+1. Read the review text from the pending approval's `summary` field.
+
+2. Determine the review action from the `level` field:
+   - `approve` → `gh pr review PR_NUM --approve --body "SUMMARY"`
+   - `request-changes` → `gh pr review PR_NUM --request-changes --body "SUMMARY"`
+   - `comment` → `gh pr review PR_NUM --comment --body "SUMMARY"`
+
+3. Post the review:
+   ```bash
+   gh pr review PR_NUM --LEVEL --body "$SUMMARY" --repo "$REPO"
+   ```
+
+4. Remove from pending approvals:
+   ```bash
+   source lib/state.sh
+   remove_pending_approval "$REPO" PR_NUM
+   ```
+
+5. Send notification via configured channels
+
+6. Store calibration memory:
+   ```
+   memory_add: "argos/<owner>/<repo>/calibration: PR review <level> for #<pr> — human approved posting. Lenses: <flagged lenses>"
+   ```
 
 ## If Rejecting
 
-1. Confirm: "Rejecting: [action] on [repo]#[issue]"
+1. Confirm: "Rejecting: level [N] action on [repo]#[issue]"
 2. Remove from pending approvals
 3. Optionally post a GitHub comment noting the action was reviewed and declined
-4. Store rejection in memories (so Argos learns what gets rejected)
+4. Store calibration memory so Argos learns what gets rejected:
+   ```
+   memory_add: "argos/<owner>/<repo>/calibration: level <N> for <issue-type> — human rejected. Reason: <if given>"
+   ```

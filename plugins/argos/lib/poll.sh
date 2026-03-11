@@ -70,3 +70,53 @@ has_new_issues() {
   count=$(fetch_issues "$repo" | parse_issues | filter_new_issues "$last_seen" | jq 'length')
   [[ "$count" -gt 0 ]]
 }
+
+# --- PR Polling Functions ---
+
+fetch_prs() {
+  local repo="$1"
+  gh pr list --repo "$repo" --state open \
+    --json number,title,author,createdAt,labels,headRefName,commits 2>/dev/null || echo "[]"
+}
+
+parse_prs() {
+  jq '[.[] | {
+    number: .number,
+    title: .title,
+    author: .author.login,
+    created_at: .createdAt,
+    labels: [.labels[]?.name],
+    head_ref: .headRefName,
+    commits: [.commits[]?.messageHeadline]
+  }]'
+}
+
+filter_new_prs() {
+  local last_seen="$1"
+  jq --argjson last "$last_seen" '[.[] | select(.number > $last)]'
+}
+
+filter_ignored_prs() {
+  local ignore_authors="${1:-}" ignore_labels="${2:-}"
+  if [[ -n "$ignore_authors" && -n "$ignore_labels" ]]; then
+    jq --arg authors "$ignore_authors" --arg labels "$ignore_labels" '
+      ($authors | split(",")) as $auth_list |
+      ($labels | split(",")) as $lbl_list |
+      [.[] | .author as $a | select(
+        ($auth_list | all(. != $a)) and
+        ([.labels[]? // empty] | all(. as $l | $lbl_list | all(. != $l)))
+      )]'
+  elif [[ -n "$ignore_authors" ]]; then
+    jq --arg authors "$ignore_authors" '
+      ($authors | split(",")) as $auth_list |
+      [.[] | .author as $a | select($auth_list | all(. != $a))]'
+  elif [[ -n "$ignore_labels" ]]; then
+    jq --arg labels "$ignore_labels" '
+      ($labels | split(",")) as $lbl_list |
+      [.[] | select(
+        [.labels[]? // empty] | all(. as $l | $lbl_list | all(. != $l))
+      )]'
+  else
+    cat
+  fi
+}
