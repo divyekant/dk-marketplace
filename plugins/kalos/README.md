@@ -9,11 +9,27 @@ Greek: *kalos* (καλός) — beautiful, noble, fine.
 Kalos is the design counterpart to [Apollo](https://github.com/divyekant/apollo). Apollo governs dev conventions; Kalos governs design conventions.
 
 - **Define** design tokens (colors, typography, spacing, radii) in YAML config
-- **Inject** design rules into agent instruction files (CLAUDE.md, .cursorrules, etc.)
+- **Inject** design rules into agent instruction files (`CLAUDE.md`, `AGENTS.md`, `.cursor/rules/`, etc.)
 - **Sync** tokens to design tools (Pencil variables, Tailwind config)
 - **Validate** design artifacts against declared rules
 
 ## Quick Start
+
+### In Codex
+
+```bash
+git clone https://github.com/divyekant/kalos.git ~/.codex/kalos
+mkdir -p ~/.agents/skills
+ln -s ~/.codex/kalos/skills/kalos ~/.agents/skills/kalos
+```
+
+Restart Codex after installation so it discovers the skill.
+
+Use Kalos in natural language, for example: `Use Kalos to initialize design tokens for this project.`
+
+Detailed Codex instructions: [`/.codex/INSTALL.md`](.codex/INSTALL.md)
+
+### In Claude Code
 
 ```bash
 # Clone into your skills directory
