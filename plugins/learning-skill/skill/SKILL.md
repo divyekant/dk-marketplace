@@ -34,7 +34,9 @@ CONTEXT: <project/tool/language>
 **Check once per session:**
 
 1. If `mcp__memories__memory_add` tool is available → use **Memories MCP**
-2. Otherwise → use **Auto-memory files**
+2. Otherwise:
+   - In Claude Code → use **Auto-memory files**
+   - In other hosts (including Codex) → explain that the file fallback is unavailable there and that Memories MCP must be configured
 
 Do NOT mix backends in a single session.
 
@@ -56,7 +58,7 @@ Do NOT mix backends in a single session.
    )
    ```
 
-### With Auto-memory Files
+### With Auto-memory Files (Claude Code only)
 
 1. **Read existing learnings:**
    Read `~/.claude/projects/<project-path>/memory/learnings.md`
@@ -92,7 +94,7 @@ The Memories API handles reconciliation out-of-the-box (OOB) via `memory_is_nove
 
 This should be rare — only when you're confident the new solution supersedes the old one.
 
-### With Auto-memory Files
+### With Auto-memory Files (Claude Code only)
 
 1. **Archive the old entry:**
    Read `~/.claude/projects/<project-path>/memory/learnings-archive.md` (create if it doesn't exist).
@@ -121,7 +123,7 @@ Before attempting work in a problem area, search for relevant past learnings:
 mcp__memories__memory_search(query="<description of what you're about to do>", k=5)
 ```
 
-### With Auto-memory Files
+### With Auto-memory Files (Claude Code only)
 Read `learnings.md` and scan for relevant entries.
 
 ### Age Awareness
@@ -136,7 +138,7 @@ When reviewing retrieved learnings, check how old they are:
 
 ## Limitations by Backend
 
-| Capability | Memories MCP | Auto-memory Files |
+| Capability | Memories MCP | Auto-memory Files (Claude Code only) |
 |---|---|---|
 | Semantic dedup | OOB | Keyword-based (imprecise) |
 | Supersede detection | OOB | Category + keyword match |
