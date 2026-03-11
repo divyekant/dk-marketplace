@@ -11,11 +11,16 @@ Prototype visuals on a Pencil.dev canvas — on demand, from any conversation.
 
 ## Step 1: Ensure Pencil is Ready
 
-Run the startup script:
+Run the startup script from the installed skill location:
 
-```bash
-bash ~/.claude/skills/pencil-prototyping/bin/pencil-start.sh
-```
+- Claude Code install:
+  ```bash
+  bash ~/.claude/skills/pencil-prototyping/bin/pencil-start.sh
+  ```
+- Codex install:
+  ```bash
+  bash ~/.agents/skills/pencil-prototyping/bin/pencil-start.sh
+  ```
 
 **Interpret exit codes:**
 - **Exit 0** — Pencil is installed and running. Continue to Step 2.
@@ -23,10 +28,12 @@ bash ~/.claude/skills/pencil-prototyping/bin/pencil-start.sh
 - **Exit 2** — First-time install. Tell the user:
   > Pencil has been installed. Please:
   > 1. Activate with your email in the Pencil window
-  > 2. Go to Settings → Agents and MCP → enable Claude Code
+  > 2. Go to Settings → Agents and MCP → enable your current agent integration
   > 3. Confirm when done
 
-  After user confirms, invoke the `restart` skill to restart Claude Code for MCP connection.
+  After user confirms:
+  - If this host has a restart skill, use it to restart the current agent.
+  - Otherwise, ask the user to restart the current agent manually and run the request again.
 
 ## Step 2: Check MCP Connection
 
@@ -37,10 +44,10 @@ mcp__pencil__get_editor_state
 ```
 
 - **If it works** — MCP is connected. Continue to Step 3.
-- **If it errors** — Pencil is running but MCP isn't connected (CC was started before Pencil). Tell the user:
-  > Pencil is running but MCP isn't connected yet. Restarting Claude Code to establish the connection.
+- **If it errors** — Pencil is running but MCP isn't connected yet. Tell the user:
+  > Pencil is running but MCP isn't connected yet. Restart the current agent to establish the MCP connection, then run this request again.
 
-  Invoke the `restart` skill.
+  If a restart skill is available in the current host, use it. Otherwise ask the user to restart manually.
 
 ## Step 3: Create or Open Canvas
 
