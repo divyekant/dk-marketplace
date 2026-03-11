@@ -24,7 +24,19 @@ claude plugins install delphi
 claude plugins install github:divyekant/delphi
 ```
 
-### Manual install
+### In Codex
+
+```bash
+git clone https://github.com/divyekant/delphi.git ~/.codex/delphi
+mkdir -p ~/.agents/skills
+ln -sf ~/.codex/delphi/skills/delphi ~/.agents/skills/delphi
+```
+
+Restart Codex after installation so it discovers the skill.
+
+Detailed Codex instructions: [`/.codex/INSTALL.md`](.codex/INSTALL.md)
+
+### Manual install in Claude Code
 
 Clone the repo and symlink the skill:
 
