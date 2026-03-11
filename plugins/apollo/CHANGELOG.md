@@ -1,5 +1,16 @@
 # Changelog
 
+## [Unreleased]
+
+## [1.0.1] - 2026-03-11
+
+### Added
+- Codex install guide at `.codex/INSTALL.md`
+- Root `AGENTS.md` so the Apollo repo itself is first-class in Codex
+
+### Changed
+- README now documents Codex skill discovery via `~/.agents/skills/`
+
 ## [1.0.0] - 2026-02-28
 
 ### Added

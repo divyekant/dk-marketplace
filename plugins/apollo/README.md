@@ -15,7 +15,24 @@ claude plugins install apollo
 claude plugins install github:divyekant/apollo
 ```
 
-### Manual install
+### In Codex
+
+```bash
+# Clone Apollo into your Codex workspace
+git clone https://github.com/divyekant/apollo.git ~/.codex/apollo
+
+# Symlink the skill into Codex discovery
+mkdir -p ~/.agents/skills
+ln -s ~/.codex/apollo/skills/apollo ~/.agents/skills/apollo
+```
+
+Restart Codex after installation so it discovers the skill.
+
+Apollo uses the same `~/.apollo/` config on Codex and writes managed conventions to `AGENTS.md` when `codex` is in your configured `agents` list.
+
+Detailed Codex instructions: [`/.codex/INSTALL.md`](.codex/INSTALL.md)
+
+### Manual install in Claude Code
 
 ```bash
 # 1. Symlink the skill
@@ -97,6 +114,8 @@ On every injection (`/apollo init`, `/apollo check`, config update), Apollo writ
 | `aider` | `CONVENTIONS.md` | Markdown with managed section markers |
 
 Apollo manages only its own section (between `<!-- APOLLO:START -->` and `<!-- APOLLO:END -->` markers). Your own instructions in these files are left untouched. For Cursor, Apollo owns the entire `.cursor/rules/apollo.mdc` file but doesn't touch other rule files.
+
+In Codex, the equivalent of `CLAUDE.md` is `AGENTS.md`. Apollo treats it the same way: marker-based managed section, user content outside the markers left intact.
 
 ## License
 
