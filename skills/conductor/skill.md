@@ -12,6 +12,8 @@ You are the conductor — the entry-point skill that orchestrates all other skil
 At the start of every conversation:
 
 1. **Read the pipeline config** — Read `pipelines.yaml` from the skill-conductor project root (find it via the symlink at `~/.claude/skills/conductor/`; the project root is two levels up from the skill directory).
+   - Claude Code install path: `~/.claude/skills/conductor/`
+   - Codex install path: `~/.agents/skills/conductor/`
 2. **Check for onboarding** — If pipelines.yaml contains `setup: needed`, run the Onboarding flow (see below) instead of normal classification.
 3. **Wait for a task** — Do not classify or propose a pipeline until the user describes what they want to do.
 
@@ -24,13 +26,16 @@ When `setup: needed` is present in pipelines.yaml, the user has a fresh install.
 Scan for skills the user already has:
 
 ```bash
-# List skills in ~/.claude/skills/
-ls ~/.claude/skills/
+# Claude Code: list skills in ~/.claude/skills/
+ls ~/.claude/skills/ 2>/dev/null
 
-# List installed plugins
+# Codex: list skills in ~/.agents/skills/
+ls ~/.agents/skills/ 2>/dev/null
+
+# Claude Code only: list installed plugins
 ls ~/.claude/plugins/cache/ 2>/dev/null
 
-# Check for common plugin directories
+# Claude Code only: check for common plugin directories
 ls ~/.claude/plugins/cache/claude-plugins-official/ 2>/dev/null
 ```
 
@@ -85,7 +90,7 @@ Based on their answers, generate a complete `pipelines.yaml`:
 ### Onboarding principles
 
 - **Ask, don't assume** — don't presume which skills they have or want
-- **Any skill works** — the user can name skills you've never heard of. If it exists in `~/.claude/skills/` or as a plugin, the conductor can invoke it.
+- **Any skill works** — the user can name skills you've never heard of. If it exists in the host's discovered skills directory (`~/.claude/skills/` or `~/.agents/skills/`) or as a Claude Code plugin, the conductor can invoke it.
 - **Keep it conversational** — this isn't a form. Adapt your questions to their answers.
 - **One question at a time** — don't overwhelm with all questions at once
 - **Generate, don't template** — write a config tailored to their specific skills and workflow, not a copy of an example file
