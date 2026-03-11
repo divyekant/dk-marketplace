@@ -10,21 +10,38 @@ _state_file() {
   echo "$ARGOS_STATE_DIR/$safe_name.json"
 }
 
+is_watched() {
+  local repo="$1"
+  [[ -f "$(_state_file "$repo")" ]]
+}
+
 init_state() {
   local repo="$1"
   local state_file
   state_file=$(_state_file "$repo")
   mkdir -p "$(dirname "$state_file")"
   if [[ ! -f "$state_file" ]]; then
-    cat > "$state_file" <<'INIT'
-{
-  "last_poll": null,
-  "last_issue_seen": 0,
-  "pending_approvals": [],
-  "actions_this_hour": 0,
-  "actions_hour_start": null
-}
-INIT
+    jq -n \
+      --arg project_path "${ARGOS_PROJECT_PATH:-}" \
+      --arg owner_repo "$repo" \
+      '{
+        last_poll: null,
+        last_issue_seen: 0,
+        last_pr_seen: 0,
+        pending_approvals: [],
+        actions_this_hour: 0,
+        actions_hour_start: null,
+        project_path: $project_path,
+        owner_repo: $owner_repo
+      }' > "$state_file"
+  else
+    # Backfill missing fields for pre-v0.3.0 state files
+    local tmp="${state_file}.tmp.$$"
+    jq --arg project_path "${ARGOS_PROJECT_PATH:-}" \
+       --arg owner_repo "$repo" \
+       '.last_pr_seen //= 0 | .project_path //= $project_path | .owner_repo //= $owner_repo' \
+       "$state_file" > "$tmp"
+    mv "$tmp" "$state_file"
   fi
 }
 
@@ -42,8 +59,22 @@ set_last_issue_seen() {
   mv "$tmp" "$state_file"
 }
 
+get_last_pr_seen() {
+  local repo="$1"
+  jq -r '.last_pr_seen // 0' "$(_state_file "$repo")"
+}
+
+set_last_pr_seen() {
+  local repo="$1" pr_num="$2"
+  local state_file
+  state_file=$(_state_file "$repo")
+  local tmp="${state_file}.tmp.$$"
+  jq --argjson num "$pr_num" '.last_pr_seen = $num | .last_poll = (now | todate)' "$state_file" > "$tmp"
+  mv "$tmp" "$state_file"
+}
+
 add_pending_approval() {
-  local repo="$1" issue_num="$2" action="$3" mode="$4" summary="$5"
+  local repo="$1" issue_num="$2" action="$3" mode="$4" summary="$5" type="${6:-issue}"
   local state_file
   state_file=$(_state_file "$repo")
   local tmp="${state_file}.tmp.$$"
@@ -51,12 +82,14 @@ add_pending_approval() {
      --arg action "$action" \
      --arg mode "$mode" \
      --arg summary "$summary" \
+     --arg type "$type" \
      '.pending_approvals += [{
        "issue": $num,
        "action": $action,
        "proposed_at": (now | todate),
        "mode": $mode,
-       "summary": $summary
+       "summary": $summary,
+       "type": $type
      }]' "$state_file" > "$tmp"
   mv "$tmp" "$state_file"
 }

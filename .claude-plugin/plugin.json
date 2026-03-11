@@ -1,7 +1,7 @@
 {
   "name": "argos",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "description": "The All-Seeing Issue Guardian — watches GitHub repos and acts on issues within configurable boundaries",
-  "author": { "name": "Divyekant Keshri" },
+  "author": { "name": "Divyekant" },
   "license": "MIT"
 }
