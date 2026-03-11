@@ -20,7 +20,7 @@ status: draft
 generated: {date}
 source-tier: {carto|direct|context}
 context-files: [{list}]
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # Feature Handoff: {Feature Name}
@@ -81,7 +81,7 @@ status: draft
 generated: {date}
 commit-range: {from-hash}..{to-hash}
 source-tier: {tier}
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # Internal Release Notes — v{version}
@@ -148,7 +148,7 @@ topic: {scenario-name}
 status: draft
 generated: {date}
 source-tier: {tier}
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # Use Case: {Scenario Title}
@@ -205,7 +205,7 @@ audience: internal
 status: draft
 generated: {date}
 source-tier: {tier}
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # Internal FAQ
@@ -247,7 +247,7 @@ topic: {symptom-area}
 status: draft
 generated: {date}
 source-tier: {tier}
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # Troubleshooting: {Symptom Area}
@@ -312,7 +312,7 @@ audience: internal
 status: draft
 generated: {date}
 source-tier: {tier}
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # Glossary
