@@ -120,7 +120,10 @@ config change.
 
    Only include instructions for config values that are set and meaningful.
 
-3. **Write to CLAUDE.md** using marker-based injection:
+3. **Write to the current agent instruction file** using marker-based injection:
+
+   - Claude Code: `CLAUDE.md`
+   - Codex: `AGENTS.md`
 
    ```markdown
    <!-- KALOS:START - Do not edit this section manually -->
@@ -226,7 +229,7 @@ Ask questions ONE AT A TIME using AskUserQuestion.
    and any overrides from user answers.
    If multi-brand was selected, also write the `brands:` section with palettes and active brand.
 2. Run the **Instruction Injection Procedure** to write KALOS section
-   to CLAUDE.md
+   to the current agent instruction file
 3. Confirm: "Design standards set up. Run `/kalos check` to validate designs,
    `/kalos sync` to push tokens to adapters, or `/kalos extract` to
    bootstrap from existing artifacts."
@@ -943,7 +946,7 @@ Present using AskUserQuestion:
 #### Post-Integration
 
 If user chose option 1, 2, or 3:
-- Run Instruction Injection to update CLAUDE.md
+- Run Instruction Injection to update the current agent instruction file
 - If adapters are enabled, offer to run `/kalos sync`
 
 #### Final Summary
@@ -983,7 +986,7 @@ Switch the active brand and re-sync all adapters.
    Switched to brand: {name}
    - Primary: {color}, Secondary: {color}
    - Font: {family}
-   - Re-injected CLAUDE.md
+   - Re-injected the current agent instruction file
    - Re-synced: {adapter list}
    ```
 
@@ -1005,7 +1008,7 @@ next action.
    from existing artifacts, or `/kalos import` to reverse-engineer
    from source code or a live URL."
 
-3. **KALOS section missing or drifted in CLAUDE.md**
+3. **KALOS section missing or drifted in the current agent instruction file**
    → Re-inject the managed section automatically using the
    Instruction Injection Procedure, then confirm:
    "Re-synced design standards with Kalos config."
