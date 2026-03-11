@@ -57,7 +57,7 @@
     {
       "name": "skill-conductor",
       "description": "Skill composition framework that classifies tasks, selects pipelines, and sequences skills through phases. Acts as an orchestration layer for Claude Code skills.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "source": "./plugins/skill-conductor",
       "category": "development",
       "strict": false
