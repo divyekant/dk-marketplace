@@ -166,7 +166,7 @@ full_sequence() {
     local install_exit=0
     install_pencil || install_exit=$?
     if [ "${install_exit}" -eq 2 ]; then
-      echo "ACTIVATE: Open Pencil, activate with your email, then enable Claude Code in Settings → Agents and MCP"
+      echo "ACTIVATE: Open Pencil, activate with your email, then enable your agent integration in Settings → Agents and MCP"
       exit 2
     elif [ "${install_exit}" -ne 0 ]; then
       exit 1

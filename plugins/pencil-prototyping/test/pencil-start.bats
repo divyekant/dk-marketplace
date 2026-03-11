@@ -124,3 +124,53 @@ load test_helper
   [ "$status" -eq 0 ]
   [[ "$output" == *"already running"* ]]
 }
+
+@test "no flag prints host-neutral activation instructions after first-time install" {
+  MOCK_BIN="${TEST_TEMP}/mock-bin"
+  mkdir -p "${MOCK_BIN}"
+
+  cat > "${MOCK_BIN}/curl" <<'EOF'
+#!/usr/bin/env bash
+out=""
+while [ "$#" -gt 0 ]; do
+  if [ "$1" = "-o" ]; then
+    out="$2"
+    shift 2
+  else
+    shift
+  fi
+done
+touch "${out}"
+EOF
+  chmod +x "${MOCK_BIN}/curl"
+
+  cat > "${MOCK_BIN}/hdiutil" <<'EOF'
+#!/usr/bin/env bash
+if [ "$1" = "attach" ]; then
+  echo "/dev/disk9 Apple_HFS /Volumes/Pencil"
+  exit 0
+fi
+if [ "$1" = "detach" ]; then
+  exit 0
+fi
+exit 1
+EOF
+  chmod +x "${MOCK_BIN}/hdiutil"
+
+  cat > "${MOCK_BIN}/cp" <<'EOF'
+#!/usr/bin/env bash
+dest="${3}"
+mkdir -p "${dest}"
+EOF
+  chmod +x "${MOCK_BIN}/cp"
+
+  PATH="${MOCK_BIN}:$PATH" \
+  PENCIL_USER_APP="${TEST_TEMP}/Applications/Pencil.app" \
+  PENCIL_SYS_APP="${TEST_TEMP}/SysApplications/Pencil.app" \
+  PENCIL_DOWNLOAD_DIR="${TEST_TEMP}/Downloads" \
+    run "${PENCIL_START}"
+
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"ACTIVATE:"* ]]
+  [[ "$output" == *"enable your agent integration in Settings → Agents and MCP"* ]]
+}
