@@ -105,7 +105,7 @@
     {
       "name": "argos",
       "description": "The All-Seeing Issue Guardian — watches GitHub repos and acts on issues within configurable boundaries",
-      "version": "0.1.0",
+      "version": "0.2.1",
       "source": "./plugins/argos",
       "category": "development",
       "strict": false
