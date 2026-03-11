@@ -78,9 +78,13 @@ Templates support per-project overrides. Resolution order (first match wins):
 ```bash
 mkdir -p .hermes/templates
 # Copy a bundled template to customize it:
-cp ~/.claude/skills/hermes/templates/internal.md .hermes/templates/internal.md
+cp <installed-hermes-skill>/templates/internal.md .hermes/templates/internal.md
 # Edit to taste, then Hermes will use it automatically
 ```
+
+Examples:
+- Claude Code install: `cp ~/.claude/skills/hermes/templates/internal.md .hermes/templates/internal.md`
+- Codex install: `cp ~/.agents/skills/hermes/templates/internal.md .hermes/templates/internal.md`
 
 ### Loading Rules
 
@@ -189,7 +193,7 @@ After user confirms, write `docs/generated/.hermes.md`:
 ## Configuration
 - Source tier: {carto|direct}
 - Context files: {list}
-- Hermes version: 1.0.0
+- Hermes version: 1.0.1
 
 ## Features
 | Feature | Components | Status |
@@ -286,7 +290,7 @@ Write `docs/generated/index.md`:
 ```markdown
 # Hermes Documentation Index
 
-Generated: {timestamp} | Source: {tier} | Hermes v1.0.0
+Generated: {timestamp} | Source: {tier} | Hermes v1.0.1
 
 ## Internal ({count} docs)
 | ID | Type | Topic | Generated |

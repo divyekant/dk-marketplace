@@ -22,7 +22,7 @@ status: draft
 generated: {date}
 source-tier: {tier}
 context-files: [{list}]
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # Feature Brief: {Feature Name}
@@ -81,7 +81,7 @@ audience: marketing
 status: draft
 generated: {date}
 source-tier: {tier}
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # {Product Name} — Product Datasheet
@@ -143,7 +143,7 @@ version: {version}
 status: draft
 generated: {date}
 source-tier: {tier}
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # {Product Name} v{version}: {Headline}
@@ -189,7 +189,7 @@ topic: {feature-or-product}
 status: draft
 generated: {date}
 source-tier: {tier}
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # {Feature/Product Name}
@@ -243,7 +243,7 @@ topic: {feature-or-topic}
 status: draft
 generated: {date}
 source-tier: {tier}
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # {Compelling Headline}
@@ -308,7 +308,7 @@ topic: {feature-or-topic}
 status: draft
 generated: {date}
 source-tier: {tier}
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # Social Posts: {Feature/Topic Name}
@@ -373,7 +373,7 @@ topic: {feature-or-release}
 status: draft
 generated: {date}
 source-tier: {tier}
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # Email: {Feature/Release Name}
@@ -430,7 +430,7 @@ topic: {product-or-feature}
 status: draft
 generated: {date}
 source-tier: {tier}
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # Landing Page: {Product/Feature Name}

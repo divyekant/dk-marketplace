@@ -17,7 +17,7 @@ Generated from git history. Groups commits by type. Translates engineering langu
 type: changelog
 audience: external
 generated: {date}
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # Changelog
@@ -67,7 +67,7 @@ audience: external
 status: draft
 generated: {date}
 source-tier: {tier}
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # API Reference
@@ -146,7 +146,7 @@ topic: {feature-name}
 status: draft
 generated: {date}
 source-tier: {tier}
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # {Feature Name}
@@ -194,7 +194,7 @@ audience: external
 status: draft
 generated: {date}
 source-tier: {tier}
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # Getting Started
@@ -250,7 +250,7 @@ audience: external
 status: draft
 generated: {date}
 source-tier: {tier}
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # Configuration Reference
@@ -303,7 +303,7 @@ audience: external
 status: draft
 generated: {date}
 source-tier: {tier}
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # Error Reference
@@ -354,7 +354,7 @@ to-version: {to}
 status: draft
 generated: {date}
 source-tier: {tier}
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # Migration Guide: v{from} → v{to}
@@ -420,7 +420,7 @@ topic: {scenario-name}
 status: draft
 generated: {date}
 source-tier: {tier}
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # Tutorial: {Scenario Title}
@@ -515,7 +515,7 @@ audience: external
 status: draft
 generated: {date}
 source-tier: {tier}
-hermes-version: 1.0.0
+hermes-version: 1.0.1
 ---
 
 # Cookbook

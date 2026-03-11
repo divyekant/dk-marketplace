@@ -2,7 +2,7 @@
 
 *The messenger who speaks every audience's language.*
 
-Hermes is a Claude skill that generates audience-specific documentation from a single codebase. It reads your code, docs, specs, and git history — then produces structured documentation for three distinct audiences.
+Hermes is a skill for coding agents that generates audience-specific documentation from a single codebase. It reads your code, docs, specs, and git history — then produces structured documentation for three distinct audiences.
 
 ## The Problem
 
@@ -39,7 +39,22 @@ claude plugins install hermes
 claude plugins install github:divyekant/hermes
 ```
 
-### Manual install
+### In Codex
+
+```bash
+# Clone into your Codex workspace
+git clone https://github.com/divyekant/hermes.git ~/.codex/hermes
+
+# Symlink into Codex discovery
+mkdir -p ~/.agents/skills
+ln -s ~/.codex/hermes/skills/hermes ~/.agents/skills/hermes
+```
+
+Restart Codex after installation so it discovers the skill.
+
+Detailed Codex instructions: [`/.codex/INSTALL.md`](.codex/INSTALL.md)
+
+### Manual install in Claude Code
 
 ```bash
 # Clone the repo
@@ -110,9 +125,14 @@ Override any audience's templates per-project:
 
 ```bash
 mkdir -p .hermes/templates
-cp ~/.claude/skills/hermes/templates/internal.md .hermes/templates/internal.md
+cp <installed-hermes-skill>/templates/internal.md .hermes/templates/internal.md
 # Edit to taste — Hermes uses project overrides first
 ```
+
+Examples:
+
+- Claude Code: `cp ~/.claude/skills/hermes/templates/internal.md .hermes/templates/internal.md`
+- Codex: `cp ~/.agents/skills/hermes/templates/internal.md .hermes/templates/internal.md`
 
 ## Post-Commit Hook
 

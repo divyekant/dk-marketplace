@@ -1,7 +1,7 @@
 {
   "name": "hermes",
   "description": "Audience-specific documentation generator. Reads a codebase and produces internal (CS/Support), external (users/developers), and marketing (sales/PMM) docs from a single source.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": { "name": "Divyekant" },
   "homepage": "https://github.com/divyekant/hermes",
   "repository": "https://github.com/divyekant/hermes",
