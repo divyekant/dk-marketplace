@@ -1,6 +1,6 @@
-# Learning Skill for Claude Code
+# Learning Skill for Claude Code and Codex
 
-A Claude Code skill that teaches Claude to automatically record learnings (failures + fixes) during sessions and retrieve them to avoid repeating the same mistakes.
+A skill for coding agents that teaches them to automatically record learnings (failures + fixes) during sessions and retrieve them to avoid repeating the same mistakes.
 
 ## Why
 
@@ -19,7 +19,21 @@ claude plugins install learning-skill
 claude plugins install github:divyekant/learning-skill
 ```
 
-### Manual install
+### In Codex
+
+Codex support uses the Memories MCP backend. The Claude Code file backend and hook installer do not apply there.
+
+```bash
+git clone https://github.com/divyekant/learning-skill.git ~/.codex/learning-skill
+mkdir -p ~/.agents/skills
+ln -s ~/.codex/learning-skill/skill ~/.agents/skills/learning
+```
+
+Ensure the Memories MCP server is configured in Codex, then restart Codex so it discovers the skill.
+
+Detailed Codex instructions: [`/.codex/INSTALL.md`](.codex/INSTALL.md)
+
+### Manual install in Claude Code
 
 ```bash
 git clone https://github.com/divyekant/learning-skill.git
@@ -44,17 +58,17 @@ Then restart Claude Code (new session or `/restart` if you have a restart comman
 
 ### Two layers
 
-1. **Skill (real-time)** -- Claude recognizes failures during a session and records them using a structured schema
-2. **Hook (safety net)** -- A Stop hook analyzes the transcript for failure-to-fix patterns that weren't captured in-session (requires memories API)
+1. **Skill (real-time)** -- the agent recognizes failures during a session and records them using a structured schema
+2. **Hook (safety net, Claude Code only)** -- a Stop hook analyzes the transcript for failure-to-fix patterns that weren't captured in-session (requires memories API)
 
 ### Two storage backends
 
 | Backend | Dependencies | Features |
 |---------|-------------|----------|
-| **Auto-memory files** | None (built into Claude Code) | Appends to `learnings.md`, supersedes old learnings to `learnings-archive.md`, keyword-based dedup |
+| **Auto-memory files** | None (built into Claude Code only) | Appends to `learnings.md`, supersedes old learnings to `learnings-archive.md`, keyword-based dedup |
 | **[Memories](https://github.com/divyekant/memories) MCP** | Memories server | Semantic search, deduplication, cross-project retrieval, staleness handled OOB |
 
-The skill auto-detects which backend is available. If Memories MCP tools exist, it uses them. Otherwise it falls back to file-based storage.
+The skill auto-detects which backend is available. If Memories MCP tools exist, it uses them. Otherwise it falls back to file-based storage in Claude Code only.
 
 ### Staleness management
 
