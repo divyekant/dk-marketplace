@@ -2,6 +2,8 @@
 
 A Claude Code plugin marketplace with tools for testing, documentation, project management, lateral thinking, and more.
 
+Several bundled plugins also document direct Codex installation in their source repositories. The marketplace itself remains Claude Code-specific; for Codex, use each plugin repo's `.codex/INSTALL.md`.
+
 ## Installation
 
 ```bash
