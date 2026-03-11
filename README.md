@@ -65,6 +65,59 @@ python -m server
 
 The server communicates over stdio using the MCP protocol, ready for any MCP-compatible client to connect.
 
+### Claude Code Integration
+
+Add Pheme to `~/.claude/.mcp.json` (the global MCP config file — **not** `settings.json`):
+
+```json
+{
+  "mcpServers": {
+    "pheme": {
+      "command": "/path/to/pheme/.venv/bin/python",
+      "args": ["-m", "server"],
+      "cwd": "/path/to/pheme",
+      "env": {
+        "PHEME_TELEGRAM": "tgram://bot_token/chat_id",
+        "PHEME_SYSTEM": "macosx://"
+      }
+    }
+  }
+}
+```
+
+> **Important:** MCP servers must be in `~/.claude/.mcp.json`. Servers placed in `~/.claude/settings.json` under `mcpServers` will **not** be loaded by Claude Code.
+
+To make the agent skill globally available, symlink it:
+
+```bash
+mkdir -p ~/.claude/skills
+ln -s /path/to/pheme/skills/pheme ~/.claude/skills/pheme
+```
+
+Restart Claude Code after configuration changes — MCP servers connect at session start.
+
+### Codex Integration
+
+Add Pheme to `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.pheme]
+command = "/path/to/pheme/.venv/bin/python"
+args = ["-m", "server"]
+cwd = "/path/to/pheme"
+```
+
+To make the skill globally available in Codex:
+
+```bash
+mkdir -p ~/.agents/skills
+ln -s /path/to/pheme/skills/pheme ~/.agents/skills/pheme
+```
+
+Restart Codex after configuration changes so it picks up the MCP server and skill.
+
+Detailed Codex instructions: [`/.codex/INSTALL.md`](.codex/INSTALL.md)
+
 ## MCP Tools
 
 Pheme exposes 4 tools via the MCP protocol:
@@ -147,8 +200,10 @@ Pheme routes messages to channels based on urgency level. Instead of hardcoding 
 Override routing by creating a YAML file. Pheme searches in this order (first match wins):
 
 1. **Project-level:** `.claude/pheme-routes.yaml` (in the current working directory)
-2. **User-level:** `~/.claude/pheme-routes.yaml`
-3. **Default:** `config/default-routes.yaml` (bundled with Pheme)
+2. **Project-level (Codex):** `.codex/pheme-routes.yaml`
+3. **User-level:** `~/.claude/pheme-routes.yaml`
+4. **User-level (Codex):** `~/.codex/pheme-routes.yaml`
+5. **Default:** `config/default-routes.yaml` (bundled with Pheme)
 
 ```yaml
 # .claude/pheme-routes.yaml
