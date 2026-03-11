@@ -1,6 +1,6 @@
 # Skill Conductor
 
-A skill composition framework for [Claude Code](https://claude.com/claude-code). Compose skills from multiple sources into configurable pipelines with a runtime router.
+A skill composition framework for Claude Code and Codex. Compose skills from multiple sources into configurable pipelines with a runtime router.
 
 ## The Problem
 
@@ -33,7 +33,22 @@ claude plugins install skill-conductor
 claude plugins install github:divyekant/skill-conductor
 ```
 
-### Manual install
+### In Codex
+
+```bash
+git clone --recursive https://github.com/divyekant/skill-conductor.git ~/.codex/skill-conductor
+mkdir -p ~/.agents/skills
+ln -s ~/.codex/skill-conductor/skills/conductor ~/.agents/skills/conductor
+ln -s ~/.codex/skill-conductor/vendor/shaping-skills/shaping ~/.agents/skills/shaping
+ln -s ~/.codex/skill-conductor/vendor/shaping-skills/breadboarding ~/.agents/skills/breadboarding
+ln -s ~/.codex/skill-conductor/vendor/shaping-skills/breadboard-reflection ~/.agents/skills/breadboard-reflection
+```
+
+Restart Codex after installation so it discovers the skills.
+
+Detailed Codex instructions: [`/.codex/INSTALL.md`](.codex/INSTALL.md)
+
+### Manual install in Claude Code
 
 ```bash
 git clone --recursive https://github.com/divyekant/skill-conductor.git ~/.local/share/skill-conductor
@@ -150,7 +165,7 @@ pipelines:
 ### Add a new skill
 
 1. Add an entry to `pipelines.yaml` under `skills:`
-2. Ensure the skill is available in `~/.claude/skills/` (symlink, clone, or plugin)
+2. Ensure the skill is available in your agent's discovered skills directory (`~/.claude/skills/` in Claude Code, `~/.agents/skills/` in Codex)
 3. Reference it in the appropriate pipeline
 
 No adapters needed — Claude reads any skill directly.

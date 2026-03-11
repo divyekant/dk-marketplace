@@ -36,6 +36,9 @@ phases:
   finish:
     order: 70
     description: Integrate and ship
+  release:
+    order: 80
+    description: Version, changelog, and project config updates
 
 skills:
   # --- Explore phase ---
@@ -43,6 +46,19 @@ skills:
   brainstorming:
     source: plugin/superpowers
     phase: explore
+    type: phase
+
+  # Pencil prototyping: visual prototyping on Pencil.dev canvas
+  # Invoked when UI/visual discussions arise during explore or shape
+  pencil-prototyping:
+    source: external
+    phase: explore
+    type: phase
+
+  # Kalos: design governance — set up tokens, validate artifacts, sync to Pencil
+  kalos:
+    source: external
+    phase: shape
     type: phase
 
   # --- Shape phase ---
@@ -91,6 +107,17 @@ skills:
     phase: verify
     type: phase
 
+  # Kalos check: validate .pen files against design tokens/rules (modifier)
+  # Only triggers when .pen design files are changed
+  kalos-check:
+    source: external
+    skill-ref: kalos
+    phase: verify
+    type: modifier
+    triggers:
+      files-changed:
+        - "*.pen"
+
   # UI validation: screenshot-based visual verification (modifier)
   # Only triggers when frontend files are changed
   ui-val:
@@ -125,6 +152,19 @@ skills:
     phase: finish
     type: phase
 
+  # Hermes: generate internal, external, and marketing documentation
+  hermes:
+    source: external
+    phase: finish
+    type: phase
+
+  # --- Release phase ---
+  # Apollo: version bumps, changelog, and project config updates
+  apollo:
+    source: external
+    phase: release
+    type: phase
+
 # Skills available at any point regardless of current phase
 always-available:
   - think-different
@@ -135,12 +175,14 @@ always-available:
   - executing-plans
   - receiving-code-review
   - writing-skills
+  - pencil-prototyping
+  - kalos
 
 pipelines:
   # Quick bug fix or small tweak — skip exploration and planning
   small-fix:
     description: Bug fix or small tweak with clear approach
-    phases: [build, verify, finish]
+    phases: [build, verify, finish, release]
     skills:
       build:
         - systematic-debugging
@@ -149,14 +191,19 @@ pipelines:
         - verification-before-completion
       finish:
         - finishing-a-development-branch
+        - hermes
+      release:
+        - apollo
 
   # Standard feature — explore the idea, plan, build, review, ship
   feature:
     description: New feature with clear requirements
-    phases: [explore, plan, build, verify, review, finish]
+    phases: [explore, plan, build, verify, review, finish, release]
     skills:
       explore:
         - brainstorming
+        - pencil-prototyping
+        - kalos
       plan:
         - writing-plans
       build:
@@ -168,17 +215,23 @@ pipelines:
         - requesting-code-review
       finish:
         - finishing-a-development-branch
+        - hermes
+      release:
+        - apollo
 
   # Complex/0-to-1 work — full Shape Up methodology before implementation
   complex:
     description: Multi-approach problem, 0-to-1, or significant architectural work
-    phases: [explore, shape, plan, build, verify, review, finish]
+    phases: [explore, shape, plan, build, verify, review, finish, release]
     skills:
       explore:
         - brainstorming
+        - pencil-prototyping
       shape:
         - shaping
         - breadboarding
+        - pencil-prototyping
+        - kalos
       plan:
         - writing-plans
       build:
@@ -190,3 +243,6 @@ pipelines:
         - review-loop
       finish:
         - finishing-a-development-branch
+        - hermes
+      release:
+        - apollo
