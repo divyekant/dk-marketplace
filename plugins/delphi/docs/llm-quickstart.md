@@ -163,6 +163,16 @@ git clone https://github.com/divyekant/delphi.git
 ln -sf $(pwd)/delphi/skills/delphi ~/.claude/skills/delphi
 ```
 
+## Installation (Codex)
+
+```bash
+git clone https://github.com/divyekant/delphi.git ~/.codex/delphi
+mkdir -p ~/.agents/skills
+ln -sf ~/.codex/delphi/skills/delphi ~/.agents/skills/delphi
+```
+
+Restart Codex after installing so it discovers the skill.
+
 ## For Other Agents
 
 Delphi is a Markdown instruction file. To use with any agent:

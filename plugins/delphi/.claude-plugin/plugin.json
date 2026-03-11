@@ -1,7 +1,7 @@
 {
   "name": "delphi",
   "description": "Comprehensive test scenario generator and executor. Produces guided cases covering positive, negative, edge, accessibility, and security paths for any software.",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "author": { "name": "Divyekant" },
   "homepage": "https://github.com/divyekant/delphi",
   "repository": "https://github.com/divyekant/delphi",

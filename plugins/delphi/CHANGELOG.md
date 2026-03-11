@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-03-11
+
+### Added
+- Codex install guide at `.codex/INSTALL.md`
+- Root `AGENTS.md` so the Delphi repo itself is first-class in Codex
+
+### Changed
+- README and LLM quickstart now document Codex skill discovery via `~/.agents/skills/`
+
 ## [1.1.0] - 2026-02-28
 
 ### Added
