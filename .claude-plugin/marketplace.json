@@ -81,7 +81,7 @@
     {
       "name": "update-checker",
       "description": "Check for updates to installed plugins, MCP servers, and hooks. Runs on session start and via /check-updates.",
-      "version": "0.2.1",
+      "version": "0.3.0",
       "source": "./plugins/update-checker",
       "category": "utilities",
       "strict": false
