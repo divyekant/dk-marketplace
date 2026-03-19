@@ -678,7 +678,21 @@ When `guardrails.dry_run` is `true`:
 
 Dry run notifications should include the prefix `[DRY RUN]` in the details field.
 
-## 10. Error Handling
+## 10. Status Protocol
+
+After processing each issue, report one of these statuses. The controller (or `/loop` scheduler) handles each differently:
+
+| Status | Meaning | Controller Action |
+|--------|---------|-------------------|
+| `DONE` | Action completed successfully (PR opened, comment posted, etc.) | Log and continue |
+| `DONE_WITH_CONCERNS` | Action completed but something warrants attention | Log concerns, notify via configured channels |
+| `BLOCKED` | Cannot proceed — missing permissions, rate limited, infrastructure down | Skip issue, notify, retry on next cycle |
+| `NEEDS_CONTEXT` | Insufficient project context to assess level accurately | Default to higher level, note gap in memories |
+| `ESCALATED` | Level was bumped during execution (e.g., Level 1 failed, escalated to Level 2) | Re-process at new level |
+
+Always report status in the notification payload so humans can filter by outcome.
+
+## 11. Error Handling
 
 Argos must never crash the loop. Every error is caught and handled gracefully.
 

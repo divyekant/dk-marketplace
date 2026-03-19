@@ -42,6 +42,16 @@ allowed_tools:
 Format-agnostic design governance tool. Define design tokens and rules once,
 enforce them across Pencil, Tailwind, CSS, and more.
 
+## Red Flags — You're Skipping Design Governance
+
+| Thought | Reality |
+|---------|---------|
+| "Design tokens aren't needed for this project" | Every project with UI benefits from tokens. Init takes 2 minutes. |
+| "We'll add design standards later" | Later never comes. Set them up now. |
+| "It's just a prototype, standards don't matter" | Prototypes become production. Start right. |
+| "The colors look fine, no need to check" | Your eyes deceive. Run `/kalos check` for objective validation. |
+| "This is too small for a design system" | Even 3 colors and 1 font need tokens to stay consistent. |
+
 ## Sub-Command Routing
 
 Detect the user's intent:

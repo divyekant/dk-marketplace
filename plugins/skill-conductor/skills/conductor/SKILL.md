@@ -1,6 +1,6 @@
 ---
 name: conductor
-description: "Use at the start of every conversation. Classifies the task, selects a pipeline, and sequences skills through phases."
+description: "Use at the start of every conversation. Also triggers on task classification, pipeline selection, or phase transitions."
 ---
 
 # Skill Conductor
@@ -94,6 +94,10 @@ Based on their answers, generate a complete `pipelines.yaml`:
 - **Keep it conversational** — this isn't a form. Adapt your questions to their answers.
 - **One question at a time** — don't overwhelm with all questions at once
 - **Generate, don't template** — write a config tailored to their specific skills and workflow, not a copy of an example file
+
+<HARD-GATE>
+Do NOT invoke any skill or begin any work until you have classified the task into a pipeline AND the user has confirmed the classification. Skipping classification leads to wrong skill sequencing and wasted effort.
+</HARD-GATE>
 
 ## Classification
 
@@ -190,6 +194,13 @@ These thoughts mean STOP — you're rationalizing skipping a skill:
 | "The skill is overkill" | Simple things become complex. Trust the pipeline. |
 | "I'll just do this one thing first" | Classify BEFORE doing anything. |
 | "I know what that skill says" | Skills evolve. Always invoke via Skill tool. |
+
+## Context Isolation
+
+When dispatching skills that use subagents:
+- Pass only the context relevant to the current phase — not the full conversation history
+- Each skill receives its own scope: the task description, relevant file paths, and phase-specific constraints
+- Do not leak prior phase outputs into subsequent phases unless they are explicitly needed
 
 ## Skill Invocation
 

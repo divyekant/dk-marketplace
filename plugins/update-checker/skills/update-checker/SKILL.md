@@ -1,5 +1,6 @@
 ---
-description: "Check for updates to installed CC plugins, MCP servers, and hooks. Shows available updates with changelogs and offers to apply them."
+name: update-checker
+description: "Use when checking for updates to installed plugins, MCP servers, or hooks. Also triggers on 'check for updates', 'update plugins', or 'what's new'."
 ---
 
 # Update Checker

@@ -1,6 +1,6 @@
 ---
 name: hermes
-description: Use when software has been built and needs audience-specific documentation generated — internal docs (CS/Support), external docs (users/developers), or marketing docs (product marketing/sales). Translates code understanding into documentation for three distinct audiences from a single source.
+description: Use when software has been built and needs audience-specific documentation generated — internal docs (CS/Support), external docs (users/developers), or marketing docs (product marketing/sales). Also triggers on "generate docs", "document this project", "CS documentation", "API docs", "feature briefs", or "release docs".
 ---
 
 # Hermes
@@ -96,6 +96,21 @@ Examples:
 Template files are located relative to this skill at `templates/internal.md`, `templates/external.md`, and `templates/marketing.md`. Use the Read tool to load them when needed.
 
 ---
+
+<HARD-GATE>
+Do NOT generate any documentation until you have completed Feature/Component Discovery (Step 2) AND the user has confirmed the feature map. Writing docs without understanding the full feature surface leads to incomplete or inaccurate documentation.
+</HARD-GATE>
+
+## Red Flags — You're Skipping Steps
+
+| Thought | Reality |
+|---------|---------|
+| "I already know what this project does" | Feature discovery reveals surfaces you missed. Do it. |
+| "Just generate docs for the main feature" | All audiences need all features. Do the full map. |
+| "Marketing docs aren't needed" | Three audiences, three lenses. Generate all unless user scopes down. |
+| "I'll skip internal docs" | Internal docs force deep understanding. They come first for a reason. |
+| "The README is good enough" | README is not documentation. Hermes generates structured, audience-specific docs. |
+| "I'll update docs later" | Docs drift immediately. Generate now while context is fresh. |
 
 ## Step-by-Step Process
 

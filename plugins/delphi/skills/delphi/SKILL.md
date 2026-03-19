@@ -1,6 +1,6 @@
 ---
 name: delphi
-description: Use when software has been built and needs comprehensive test scenarios covering positive, negative, edge, accessibility, and security paths for human testers and AI agents to execute, or to run previously generated guided cases via browser automation or programmatic verification
+description: Use when software has been built and needs test scenarios generated, or to run previously generated guided cases. Also triggers on "generate guided cases", "test scenarios", "execute guided cases", or "run guided cases".
 ---
 
 # Delphi
@@ -48,6 +48,17 @@ digraph mode {
 | No guided cases exist yet + user says "test this" | Generate first, ask about Execute |
 
 **Default behavior:** If guided cases don't exist yet, always Generate first. If they exist and user says "test" or "run", Execute.
+
+## Red Flags — You're Skipping Steps
+
+| Thought | Reality |
+|---------|---------|
+| "The tests are obvious, I'll just write them" | Surface discovery prevents blind spots. Do it. |
+| "I'll skip edge cases for now" | Edge cases are where bugs hide. Generate ALL scenarios. |
+| "Just test the happy path first" | Happy path is one row in the coverage matrix. Do the full matrix. |
+| "This app is simple, doesn't need all case types" | Simple apps have complex failure modes. Trust the matrix. |
+| "I'll add security cases later" | Security is P0. Generate them now or never. |
+| "The user only asked for a few tests" | Exhaustive by default. Users scope down, never up. |
 
 ## Model Selection
 
@@ -176,6 +187,10 @@ tests/guided-cases/
 ---
 
 ## Generate Mode
+
+<HARD-GATE>
+Do NOT write any guided cases until you have completed Surface Discovery (Step 2) AND the user has confirmed the surface map. Writing cases without understanding the full surface leads to incomplete coverage and duplicated effort.
+</HARD-GATE>
 
 Follow these steps in order. Do NOT skip steps. Do NOT start writing cases before completing surface discovery.
 
@@ -600,6 +615,14 @@ For each numbered step in the case:
 - Check success criteria — all must be true
 - Check failure criteria — none must be true
 - Final determination: PASS or FAIL
+
+### Execution Calibration
+
+**Max repair attempts per case:** 3. If a case fails after 3 execution attempts (e.g., element not found, timing issues), mark it as **skipped** with reason "Exceeded max retries" and move on. Do not loop indefinitely.
+
+**Max total execution time:** If execution has been running for more than 30 minutes, pause and report progress to the user. Ask whether to continue with remaining cases or stop.
+
+**Only flag real failures:** A case FAILS only when expected outcomes contradict actual outcomes. Transient issues (slow load, flaky element) should be retried, not failed. Infrastructure problems (app not running, MCP disconnected) should be skipped, not failed.
 
 ### Step 4: Report (Merge + Finalize)
 

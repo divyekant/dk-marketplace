@@ -1,6 +1,6 @@
 ---
 name: pencil-prototyping
-description: Launch Pencil.dev on demand and prototype visuals on a canvas. Handles install, launch, MCP connection, canvas creation, drawing, and screenshot capture.
+description: Launch Pencil.dev on demand and prototype visuals on a canvas. Use when you need to create mockups, wireframes, or visual designs. Also triggers on "open Pencil", "design mockup", "prototype this", or "visual prototype".
 argument-hint: "<topic> [--path=docs/designs/] [--open=existing.pen]"
 allowed-tools: Bash, Read, mcp__pencil__batch_design, mcp__pencil__batch_get, mcp__pencil__get_editor_state, mcp__pencil__get_guidelines, mcp__pencil__get_screenshot, mcp__pencil__get_style_guide, mcp__pencil__get_style_guide_tags, mcp__pencil__get_variables, mcp__pencil__set_variables, mcp__pencil__open_document, mcp__pencil__snapshot_layout, mcp__pencil__find_empty_space_on_canvas, mcp__pencil__search_all_unique_properties, mcp__pencil__replace_all_matching_properties, AskUserQuestion, Skill
 ---

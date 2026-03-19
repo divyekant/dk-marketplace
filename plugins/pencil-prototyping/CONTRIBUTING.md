@@ -15,7 +15,7 @@ Thanks for your interest in contributing!
 ## Guidelines
 
 - Follow conventional commit messages (`feat:`, `fix:`, `docs:`, `chore:`)
-- Keep `skill.md` focused and concise
+- Keep `SKILL.md` focused and concise
 - Test the shell script on both ARM64 and x86_64 if possible
 - Update README.md if adding user-facing features
 

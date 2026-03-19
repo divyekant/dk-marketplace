@@ -1,6 +1,6 @@
 ---
 name: ui-val
-description: Validate UI visually after making changes. Takes screenshots at multiple viewports and you evaluate them directly. Use after editing .tsx, .css, .html, .vue, or .svelte files.
+description: Validate UI visually after making changes. Use after editing .tsx, .css, .html, .vue, or .svelte files. Also triggers on "check the UI", "does it look right", or "visual validation".
 argument-hint: "<url> [--viewports=desktop,mobile] [--pages=/,/about]"
 allowed-tools: Bash, Read, Edit, Grep, Glob
 ---

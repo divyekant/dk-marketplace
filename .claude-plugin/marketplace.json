@@ -32,16 +32,16 @@
     },
     {
       "name": "delphi",
-      "description": "Comprehensive test scenario generator and executor. Produces guided cases covering positive, negative, edge, accessibility, and security paths for any software.",
-      "version": "1.1.1",
+      "description": "Comprehensive test scenario generator and executor for any software. Generate guided cases and run them via browser automation or programmatic verification.",
+      "version": "1.1.2",
       "source": "./plugins/delphi",
       "category": "testing",
       "strict": false
     },
     {
       "name": "hermes",
-      "description": "Audience-specific documentation generator. Reads a codebase and produces internal (CS/Support), external (users/developers), and marketing (sales/PMM) docs from a single source.",
-      "version": "1.0.1",
+      "description": "Audience-specific documentation generator for internal (CS/Support), external (users/developers), and marketing (sales/PMM) audiences.",
+      "version": "1.0.2",
       "source": "./plugins/hermes",
       "category": "documentation",
       "strict": false
@@ -56,8 +56,8 @@
     },
     {
       "name": "skill-conductor",
-      "description": "Skill composition framework that classifies tasks, selects pipelines, and sequences skills through phases. Acts as an orchestration layer for Claude Code skills.",
-      "version": "1.0.1",
+      "description": "Skill orchestration layer for Claude Code. Routes tasks to the right pipeline and sequences skills through phases.",
+      "version": "1.0.2",
       "source": "./plugins/skill-conductor",
       "category": "development",
       "strict": false
@@ -72,24 +72,24 @@
     },
     {
       "name": "ui-val",
-      "description": "Visual UI validation using multimodal vision. Captures screenshots at multiple viewports (desktop, tablet, mobile) and evaluates against a 12-point rubric.",
-      "version": "1.0.0",
+      "description": "Visual UI validation after code changes. Use after editing frontend files to catch layout, spacing, and rendering issues.",
+      "version": "1.0.1",
       "source": "./plugins/ui-val",
       "category": "testing",
       "strict": false
     },
     {
       "name": "update-checker",
-      "description": "Checks for updates to installed CC plugins, MCP servers, and hooks. Runs automatically on session start (once/day) and via /check-updates command.",
-      "version": "0.2.0",
+      "description": "Check for updates to installed plugins, MCP servers, and hooks. Runs on session start and via /check-updates.",
+      "version": "0.2.1",
       "source": "./plugins/update-checker",
       "category": "utilities",
       "strict": false
     },
     {
       "name": "pencil-prototyping",
-      "description": "Launch Pencil.dev on demand and prototype visuals on a canvas. Handles install, launch, MCP connection, canvas creation, drawing, and screenshot capture.",
-      "version": "0.1.1",
+      "description": "Launch Pencil.dev on demand and prototype visuals on a canvas. Use when you need mockups, wireframes, or visual designs.",
+      "version": "0.1.2",
       "source": "./plugins/pencil-prototyping",
       "category": "design",
       "strict": false
@@ -97,7 +97,7 @@
     {
       "name": "kalos",
       "description": "Format-agnostic design governance tool — define design tokens and rules, enforce them across Pencil, Tailwind, and more",
-      "version": "0.3.1",
+      "version": "0.3.2",
       "source": "./plugins/kalos",
       "category": "design",
       "strict": false
@@ -105,7 +105,7 @@
     {
       "name": "argos",
       "description": "The All-Seeing Issue Guardian — watches GitHub repos and acts on issues within configurable boundaries",
-      "version": "0.2.1",
+      "version": "0.2.2",
       "source": "./plugins/argos",
       "category": "development",
       "strict": false
