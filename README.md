@@ -22,6 +22,7 @@ claude plugins marketplace add divyekant/dk-marketplace
 | **hermes** | documentation | Audience-specific documentation generator for internal (CS/Support), external (users/developers), and marketing (sales/PMM) audiences |
 | **kalos** | design | Format-agnostic design governance tool — define design tokens and rules, enforce them across Pencil, Tailwind, and more |
 | **learning-skill** | development | Captures learnings from failures and fixes during Claude Code sessions |
+| **memories** | development | Self-hosted semantic memory — 5-signal hybrid search, operator workbench, lifecycle policies, full audit trail |
 | **pencil-prototyping** | design | Launch Pencil.dev on demand and prototype visuals on a canvas — use for mockups, wireframes, or visual designs |
 | **pheme** | utilities | Universal communication layer — agents notify humans across any channel |
 | **skill-conductor** | development | Skill orchestration layer for Claude Code — routes tasks to the right pipeline and sequences skills through phases |

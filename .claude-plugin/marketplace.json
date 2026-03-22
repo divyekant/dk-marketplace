@@ -117,6 +117,14 @@
       "source": "./plugins/pheme",
       "category": "utilities",
       "strict": false
+    },
+    {
+      "name": "memories",
+      "description": "Self-hosted semantic memory with 5-signal hybrid search (BM25 + vector + recency + feedback + confidence), operator workbench, lifecycle policies, and full audit trail",
+      "version": "3.4.0",
+      "source": "./plugins/memories",
+      "category": "development",
+      "strict": false
     }
   ]
 }
