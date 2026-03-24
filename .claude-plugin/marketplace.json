@@ -120,8 +120,8 @@
     },
     {
       "name": "memories",
-      "description": "Self-hosted semantic memory with 5-signal hybrid search (BM25 + vector + recency + feedback + confidence), operator workbench, lifecycle policies, and full audit trail",
-      "version": "3.4.0",
+      "description": "Self-hosted semantic memory with multi-backend routing, 5-signal hybrid search (BM25 + vector + recency + feedback + confidence), operator workbench, lifecycle policies, and full audit trail",
+      "version": "4.0.0",
       "source": "./plugins/memories",
       "category": "development",
       "strict": false
