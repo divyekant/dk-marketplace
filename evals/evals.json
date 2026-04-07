@@ -1,0 +1,56 @@
+{
+  "skill_name": "research",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm evaluating whether to use SQLite as the primary database for a new SaaS product that'll start small (maybe 100 users) but could grow to 10k+. I keep seeing people on HN saying SQLite is fine for production now with things like Litestream and Turso, but my CTO is skeptical. Can you do a deep research on the current state of SQLite for production web apps in 2026 — what's actually working, what are the real limitations, and where's the line where you should switch to Postgres?",
+      "expected_output": "A thorough findings.md covering SQLite production readiness with multiple perspectives (official SQLite docs, Turso/Litestream docs, community experiences from HN/Reddit, benchmark data), confidence-tagged findings, and a clear sources.md with 8+ diverse sources.",
+      "files": [],
+      "expectations": [
+        "Both findings.md and sources.md files were created in the outputs directory",
+        "findings.md contains an Executive Summary section near the top",
+        "findings.md uses numbered inline citations like [1], [2] with at least 3 distinct citations",
+        "sources.md contains at least 5 unique HTTP URLs that were actually consulted",
+        "Sources come from at least 2 different domain categories (e.g. official docs + community forums + code repos)",
+        "findings.md includes confidence tags (confirmed, single-source, or contested) on key claims",
+        "findings.md has a Contradictions or Open Questions section that addresses disagreements",
+        "findings.md is at least 500 words with specific data points like version numbers, benchmarks, or thresholds",
+        "findings.md discusses specific thresholds or decision criteria for when to choose SQLite vs Postgres"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "What's the current state of WebAssembly outside the browser? I've heard it's being used for serverless, plugin systems, and even as a Docker alternative with things like WASI and Fermyon. But I can't tell what's production-ready vs what's still experimental hype. Research this — I want to know what people are actually shipping with Wasm outside the browser right now.",
+      "expected_output": "A findings.md covering Wasm runtimes (Wasmtime, WasmEdge, etc.), WASI status, production use cases (Fermyon, Fastly, Shopify plugins, etc.), with clear separation of production-proven vs experimental. Sources from official projects, GitHub, community discussions, and tech news.",
+      "files": [],
+      "expectations": [
+        "Both findings.md and sources.md files were created in the outputs directory",
+        "findings.md contains an Executive Summary section near the top",
+        "findings.md uses numbered inline citations like [1], [2] with at least 3 distinct citations",
+        "sources.md contains at least 5 unique HTTP URLs that were actually consulted",
+        "Sources come from at least 2 different domain categories",
+        "findings.md includes confidence tags (confirmed, single-source, or contested) on key claims",
+        "findings.md has a Contradictions or Open Questions section",
+        "findings.md is at least 500 words with specific project names, companies, and use cases",
+        "findings.md clearly distinguishes production-ready technologies from experimental ones, naming at least 3 specific companies or projects shipping Wasm in production"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Research the actual evidence on whether AI coding assistants (Copilot, Cursor, Claude Code, etc.) make developers more productive. I've seen GitHub's studies claiming 55% faster task completion, but I've also seen senior engineers arguing it just produces more code that needs more review. What does the real evidence say — controlled studies, company-level data, developer surveys? I want the full picture, not marketing.",
+      "expected_output": "A findings.md that covers both sides — productivity claims with citations AND counterarguments with citations. Should include GitHub/Microsoft studies, independent research, developer surveys, and critical perspectives. Contradictions section should be substantive. Confidence tags should show which claims are confirmed vs contested.",
+      "files": [],
+      "expectations": [
+        "Both findings.md and sources.md files were created in the outputs directory",
+        "findings.md contains an Executive Summary section near the top",
+        "findings.md uses numbered inline citations like [1], [2] with at least 3 distinct citations",
+        "sources.md contains at least 5 unique HTTP URLs that were actually consulted",
+        "Sources come from at least 2 different domain categories",
+        "findings.md presents both pro-productivity evidence AND skeptical/critical perspectives with citations for each",
+        "findings.md has a substantive Contradictions section (at least 100 words) with specific claims from each side",
+        "findings.md distinguishes between types of evidence (controlled studies vs surveys vs anecdotes)",
+        "findings.md is at least 500 words with specific study names, percentages, or data points"
+      ]
+    }
+  ]
+}
