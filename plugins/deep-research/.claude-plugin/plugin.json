@@ -1,0 +1,10 @@
+{
+  "name": "deep-research",
+  "description": "Multi-step deep web research with parallel agents, query variance, source-type filtering, and cited triangulated findings",
+  "version": "1.0.0",
+  "author": { "name": "Divyekant" },
+  "homepage": "https://github.com/divyekant/deep-research",
+  "repository": "https://github.com/divyekant/deep-research",
+  "license": "MIT",
+  "keywords": ["research", "web-search", "citations", "deep-dive", "parallel-agents"]
+}

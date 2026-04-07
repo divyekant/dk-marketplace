@@ -1,0 +1,10 @@
+# Eval workspace (generated outputs, not the skill itself)
+research-workspace/
+
+# OS
+.DS_Store
+
+# Editor
+*.swp
+*.swo
+*~
