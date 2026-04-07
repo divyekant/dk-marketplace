@@ -120,8 +120,8 @@
     },
     {
       "name": "memories",
-      "description": "Self-hosted semantic memory with graph-aware search (PPR multi-hop traversal), temporal reasoning (version preservation, date-range filters), multi-backend routing, 5-signal hybrid search, operator workbench, lifecycle policies, and full audit trail",
-      "version": "5.1.0",
+      "description": "Self-hosted semantic memory with graph-aware search (PPR multi-hop traversal), temporal reasoning (version preservation, date-range filters), multi-backend routing, 6-signal hybrid search, auto-feature metrics, operator workbench, lifecycle policies, and full audit trail",
+      "version": "5.2.0",
       "source": "./plugins/memories",
       "category": "development",
       "strict": false
