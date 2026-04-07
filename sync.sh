@@ -23,6 +23,7 @@ PLUGINS=(
   "kalos|https://github.com/divyekant/kalos.git|main"
   "argos|https://github.com/divyekant/argos.git|main"
   "pheme|https://github.com/divyekant/pheme.git|main"
+  "deep-research|https://github.com/divyekant/deep-research.git|main"
 )
 
 MARKETPLACE_JSON=".claude-plugin/marketplace.json"
