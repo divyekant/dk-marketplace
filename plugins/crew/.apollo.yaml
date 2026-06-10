@@ -1,0 +1,8 @@
+# Apollo Project Config — Crew
+extends: oss
+version: 0.1.0
+
+# Crew is a markdown-based agent skill — no runtime stack
+stack:
+  language: markdown
+  package_manager: none
