@@ -18,6 +18,7 @@ claude plugins marketplace add divyekant/dk-marketplace
 | **argos** | development | The All-Seeing Issue Guardian — watches GitHub repos and acts on issues within configurable boundaries |
 | **carto** | development | Intent-aware codebase intelligence — scans codebases, builds layered semantic index, produces skill files for instant AI agent context |
 | **claude-code-restart** | utilities | Self-restart mechanism for Claude Code — adds /restart slash command and shell wrapper |
+| **crew** | development | Multi-model build orchestrator — session model directs model-matched workers (Opus→frontend, GPT‑5.5 via Codex→backend, Sonnet→mechanical) with briefs, parallel dispatch, and a review gate |
 | **delphi** | testing | Comprehensive test scenario generator and executor for any software — generate guided cases and run them via browser automation or programmatic verification |
 | **hermes** | documentation | Audience-specific documentation generator for internal (CS/Support), external (users/developers), and marketing (sales/PMM) audiences |
 | **kalos** | design | Format-agnostic design governance tool — define design tokens and rules, enforce them across Pencil, Tailwind, and more |
