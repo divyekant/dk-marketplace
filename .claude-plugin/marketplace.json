@@ -133,6 +133,14 @@
       "source": "./plugins/deep-research",
       "category": "development",
       "strict": false
+    },
+    {
+      "name": "crew",
+      "description": "Multi-model build orchestrator. The session model acts as controller and mastermind — dispatching model-matched workers (Opus for frontend, GPT-5.5 via Codex for backend, Sonnet for mechanical work), reviewing every diff, and integrating the results. Degrades gracefully on hosts without model-pinned subagents.",
+      "version": "0.1.0",
+      "source": "./plugins/crew",
+      "category": "development",
+      "strict": false
     }
   ]
 }
