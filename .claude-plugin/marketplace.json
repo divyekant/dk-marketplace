@@ -125,7 +125,8 @@
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/divyekant/memories.git",
-        "path": "mcp-server/assets/claude-code"
+        "path": "mcp-server/assets/claude-code",
+        "sha": "1f439712f22f4763d0b6533eea13dbfc16929195"
       },
       "category": "development",
       "strict": false
