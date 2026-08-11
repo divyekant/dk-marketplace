@@ -121,12 +121,12 @@
     {
       "name": "memories",
       "description": "Self-hosted semantic memory with graph-aware search (PPR multi-hop traversal), temporal reasoning (version preservation, date-range filters), multi-backend routing, 6-signal hybrid search, auto-feature metrics, operator workbench, lifecycle policies, and full audit trail",
-      "version": "5.11.0",
+      "version": "5.12.0",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/divyekant/memories.git",
         "path": "mcp-server/assets/claude-code",
-        "sha": "cf5b38bad5bfe67be3eba098ea133b21c31421ed"
+        "sha": "db8208409b44ea8c8b1faf36277b6bfa73b071fe"
       },
       "category": "development",
       "strict": false
