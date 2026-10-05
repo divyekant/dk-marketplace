@@ -146,6 +146,14 @@
       "source": "./plugins/crew",
       "category": "development",
       "strict": false
+    },
+    {
+      "name": "codex-cu",
+      "description": "Use Codex's computer-use runtime (Chrome extension, in-app browser, macOS apps) from Claude Code.",
+      "version": "0.1.0",
+      "source": "./plugins/codex-cu",
+      "category": "utilities",
+      "strict": false
     }
   ]
 }
